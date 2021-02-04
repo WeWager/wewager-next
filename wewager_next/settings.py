@@ -3,7 +3,7 @@ import environ
 from pathlib import Path
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, True)
 )
 
 if not os.environ.get("PRODUCTION", False):
