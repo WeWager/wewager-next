@@ -3,7 +3,8 @@ import environ
 from pathlib import Path
 
 env = environ.Env(
-    DEBUG=(bool, True)
+    DEBUG=(bool, True),
+    ALLOWED_HOSTS=(list, [])
 )
 
 if not os.environ.get("PRODUCTION", False):
@@ -16,7 +17,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
 
 # Application definition
