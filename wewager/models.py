@@ -1,5 +1,7 @@
 from enum import Enum
 
+from .exceptions import BalanceTooLow
+
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -41,7 +43,7 @@ class Wallet(models.Model):
 
     def deduct_balance(self, amount, transaction_type):
         if self.balance < amount:
-            raise ValidationError("Balance too low to make this transaction.")
+            raise BalanceTooLow()
         self.balance -= amount
         Transaction.objects.create(
             wallet=self, amount=amount, transaction_type=transaction_type
@@ -147,7 +149,7 @@ class WagerManager(models.Manager):
         ):
             return super(WagerManager, self).create(*args, **kwargs)
         else:
-            raise ValidationError("Sender balance too low.")
+            raise BalanceTooLow()
 
 
 class Wager(models.Model):
