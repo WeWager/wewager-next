@@ -136,6 +136,9 @@ class WagerState(Enum):
 class WagerManager(models.Manager):
     def create_wager(self, *args, **kwargs):
         sender = kwargs.get("sender", None)
+        recipient = kwargs.get("recipient", None)
+        if sender == recipient:
+            raise ValidationError("You cannot send a wager to yourself.")
         amount = kwargs.get("amount", None)
         if (
             sender

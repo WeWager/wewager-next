@@ -2,10 +2,7 @@ import os
 import environ
 from pathlib import Path
 
-env = environ.Env(
-    DEBUG=(bool, True),
-    ALLOWED_HOSTS=(list, [])
-)
+env = environ.Env(DEBUG=(bool, True), ALLOWED_HOSTS=(list, []))
 
 if not os.environ.get("PRODUCTION", False):
     environ.Env.read_env()
@@ -15,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env("SECRET_KEY")
 
-DEBUG = env('DEBUG')
+DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
@@ -71,9 +68,9 @@ WSGI_APPLICATION = "wewager_next.wsgi.application"
 
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
-    'default': env.db(),
+    "default": env.db(),
     # read os.environ['SQLITE_URL']
-    'extra': env.db('SQLITE_URL', default='sqlite:////tmp/my-tmp-sqlite.db')
+    "extra": env.db("SQLITE_URL", default="sqlite:////tmp/my-tmp-sqlite.db"),
 }
 
 
@@ -119,10 +116,10 @@ STATIC_URL = "/static/"
 DEFAULT_CURRENCY = "USD"
 
 # S3
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3StaticStorage"
 
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
