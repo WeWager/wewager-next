@@ -2,6 +2,8 @@ from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from moneyed import Money
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -67,3 +69,20 @@ class WagerSerializer(serializers.ModelSerializer):
 
     def get_status(self, wager):
         return wager.status.split(".")[-1]
+
+
+class WagerCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wager
+        fields = ("game", "team", "sender_side", "recipient", "amount")
+
+    def create(self, data):
+        amount = Money(data.get("amount"), "USD")
+        return Wager.objects.create_wager(
+            sender=self.context.get("user"),
+            team=data.get("team"),
+            game=data.get("game"),
+            sender_side=data.get("sender_side"),
+            recipient=data.get("recipient"),
+            amount=amount
+        )
