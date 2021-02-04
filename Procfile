@@ -1,0 +1,1 @@
+web: gunicorn wewager_next.wsgi
