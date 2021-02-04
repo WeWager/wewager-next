@@ -41,7 +41,7 @@ class Wallet(models.Model):
 
     def deduct_balance(self, amount, transaction_type):
         if self.balance < amount:
-            return False
+            raise ValidationError("Balance too low to make this transaction.")
         self.balance -= amount
         Transaction.objects.create(
             wallet=self, amount=amount, transaction_type=transaction_type
