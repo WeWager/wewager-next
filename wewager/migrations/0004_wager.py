@@ -249,7 +249,7 @@ class Migration(migrations.Migration):
                 (
                     "status",
                     django_fsm.FSMField(
-                        default=wewager.models.WagerState["PENDING"], max_length=50
+                        default=wewager.models.WagerState.PENDING, max_length=50
                     ),
                 ),
                 (

@@ -4,6 +4,8 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions, views, mixins
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework.exceptions import ParseError
 from .serializers import *
 
 
@@ -103,3 +105,23 @@ class WagerViewSet(ReadWriteSerializerMixin, CreateListRetrieveViewSet):
 
     def get_serializer_context(self):
         return {"user": self.request.user}
+
+    @action(detail=True, methods=["POST"])
+    def accept(self, request, pk=None):
+        wager = self.get_object()
+        if request.user != wager.recipient:
+            raise ParseError("You must be the recipient to accept a wager.")
+        wager.accept()
+        wager.save()
+        serializer = WagerSerializer(wager)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["POST"])
+    def decline(self, request, pk=None):
+        wager = self.get_object()
+        if request.user != wager.recipient:
+            raise ParseError("You must be the recipient to accept a wager.")
+        wager.decline()
+        wager.save()
+        serializer = WagerSerializer(wager)
+        return Response(serializer.data)

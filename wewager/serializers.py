@@ -47,6 +47,7 @@ class WagerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wager
         fields = (
+            "id",
             "game",
             "team",
             "opponent",
@@ -60,7 +61,7 @@ class WagerSerializer(serializers.ModelSerializer):
         opp = (
             wager.sender
             if wager.sender == self.context.get("user", None)
-            else self.recipient
+            else wager.recipient
         )
         return opp.id
 

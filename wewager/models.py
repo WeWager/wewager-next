@@ -26,6 +26,7 @@ class TransactionType(models.TextChoices):
     WAGER = "WAG", _("Wager")
     DECLINE = "DEC", _("Decline")
     WIN = "WIN", _("Win")
+    EXPIRE = "EXP", _("Expire")
 
 
 class Wallet(models.Model):
@@ -66,6 +67,8 @@ class Transaction(models.Model):
     amount = MoneyField(max_digits=10, decimal_places=2, default_currency="USD")
     transaction_type = models.CharField(max_length=3, choices=TransactionType.choices)
 
+    def __str__(self):
+        return f"<Transaction {self.wallet.user.username} {self.amount} {self.transaction_type}>"
 
 class Team(models.Model):
     city = models.CharField(max_length=30)
@@ -107,6 +110,21 @@ class Game(models.Model):
         return f"<Game #{self.id}>"
 
 
+@receiver(post_save, sender=Game)
+def close_game(sender, **kwargs):
+    instance = kwargs.get("instance", None)
+    if instance is None:
+        return
+    if instance.winner is not None:
+        assoc_wagers = Wager.objects.filter(game=instance)
+        for wager in assoc_wagers:
+            if wager.status == WagerState.PENDING:
+                wager.expire()
+            elif wager.status == WagerState.ACCEPTED:
+                wager.complete()
+            wager.save()
+
+
 class TeamData(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -128,11 +146,12 @@ class WagerType(models.TextChoices):
     MONEYLINE = "moneyline", _("moneyline")
 
 
-class WagerState(Enum):
+class WagerState(object):
     PENDING = "pending"
     DECLINED = "declined"
     ACCEPTED = "accepted"
     COMPLETED = "completed"
+    EXPIRED = "expired"
 
 
 class WagerManager(models.Manager):
@@ -168,10 +187,17 @@ class Wager(models.Model):
     @transition(field=status, source=WagerState.PENDING, target=WagerState.ACCEPTED)
     def accept(self):
         self.recipient.wallet.deduct_balance(self.amount, TransactionType.WAGER)
+        self.recipient.wallet.save()
 
     @transition(field=status, source=WagerState.PENDING, target=WagerState.DECLINED)
     def decline(self):
         self.sender.wallet.add_balance(self.amount, TransactionType.DECLINE)
+        self.sender.wallet.save()
+
+    @transition(field=status, source=WagerState.PENDING, target=WagerState.EXPIRED)
+    def expire(self):
+        self.sender.wallet.add_balance(self.amount, TransactionType.EXPIRE)
+        self.sender.wallet.save()
 
     @transition(field=status, source=WagerState.ACCEPTED, target=WagerState.COMPLETED)
     def complete(self):
@@ -183,3 +209,4 @@ class Wager(models.Model):
         )
         winner = self.sender if self.sender_side == winning_side else self.recipient
         winner.wallet.add_balance(2 * self.amount, TransactionType.WIN)
+        winner.wallet.save()
