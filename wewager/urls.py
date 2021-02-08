@@ -11,7 +11,7 @@ router.register(r"wager", views.WagerViewSet, basename="wager")
 
 v1_urlpatterns = [
     path("wallet/", views.WalletViewSet.as_view(), name="wallet"),
-    path('api-token-auth/', auth_views.obtain_auth_token)
+    path("api-token-auth/", auth_views.obtain_auth_token),
 ]
 
 v1_urlpatterns += router.urls

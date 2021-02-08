@@ -6,13 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0009_auto_20210203_2112'),
+        ("wewager", "0009_auto_20210203_2112"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='transaction',
-            name='transaction_type',
-            field=models.CharField(choices=[('DEP', 'Deposit'), ('WTH', 'Withdrawal'), ('WAG', 'Wager'), ('DEC', 'Decline'), ('WIN', 'Win'), ('EXP', 'Expire')], max_length=3),
+            model_name="transaction",
+            name="transaction_type",
+            field=models.CharField(
+                choices=[
+                    ("DEP", "Deposit"),
+                    ("WTH", "Withdrawal"),
+                    ("WAG", "Wager"),
+                    ("DEC", "Decline"),
+                    ("WIN", "Win"),
+                    ("EXP", "Expire"),
+                ],
+                max_length=3,
+            ),
         ),
     ]

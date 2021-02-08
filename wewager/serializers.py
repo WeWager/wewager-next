@@ -36,7 +36,7 @@ class GameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ("date", "winner", "data", "team_data")
+        fields = ("id", "date", "winner", "data", "team_data")
 
 
 class WagerSerializer(serializers.ModelSerializer):
@@ -85,5 +85,5 @@ class WagerCreateSerializer(serializers.ModelSerializer):
             game=data.get("game"),
             sender_side=data.get("sender_side"),
             recipient=data.get("recipient"),
-            amount=amount
+            amount=amount,
         )

@@ -70,6 +70,7 @@ class Transaction(models.Model):
     def __str__(self):
         return f"<Transaction {self.wallet.user.username} {self.amount} {self.transaction_type}>"
 
+
 class Team(models.Model):
     city = models.CharField(max_length=30)
     name = models.CharField(max_length=30)

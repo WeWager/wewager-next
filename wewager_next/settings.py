@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     # third-party
     "djmoney",
     "rest_framework",
-    "rest_framework.authtoken"
+    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
@@ -64,9 +64,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "wewager_next.wsgi.application"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ]
 }
 
