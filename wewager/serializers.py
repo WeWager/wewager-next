@@ -1,8 +1,11 @@
 from .models import *
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.exceptions import ParseError
 
 from moneyed import Money
+from djmoney.models.validators import MinMoneyValidator
+from djmoney.contrib.django_rest_framework import MoneyField
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -73,12 +76,16 @@ class WagerSerializer(serializers.ModelSerializer):
 
 
 class WagerCreateSerializer(serializers.ModelSerializer):
+    amount = MoneyField(max_digits=10, decimal_places=2)
+
     class Meta:
         model = Wager
         fields = ("game", "team", "sender_side", "recipient", "amount")
 
     def create(self, data):
         amount = Money(data.get("amount"), "USD")
+        if amount < Money(0, "USD"):
+            raise ParseError(detail="Amount must not be negative.")
         return Wager.objects.create_wager(
             sender=self.context.get("user"),
             team=data.get("team"),

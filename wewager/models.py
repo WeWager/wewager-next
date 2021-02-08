@@ -7,11 +7,13 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from rest_framework.exceptions import ParseError
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from djmoney.money import Money
 from djmoney.models.fields import MoneyField
+from djmoney.models.validators import MinMoneyValidator
 from django_fsm import FSMField, transition
 
 
@@ -160,7 +162,7 @@ class WagerManager(models.Manager):
         sender = kwargs.get("sender", None)
         recipient = kwargs.get("recipient", None)
         if sender == recipient:
-            raise ValidationError("You cannot send a wager to yourself.")
+            raise ParseError("You cannot send a wager to yourself.")
         amount = kwargs.get("amount", None)
         if (
             sender
@@ -182,7 +184,12 @@ class Wager(models.Model):
     recipient = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="recipient"
     )
-    amount = MoneyField(max_digits=7, decimal_places=2, default_currency="USD")
+    amount = MoneyField(
+        max_digits=7,
+        decimal_places=2,
+        default_currency="USD",
+        validators=[MinMoneyValidator(0)],
+    )
     status = FSMField(default=WagerState.PENDING)
 
     @transition(field=status, source=WagerState.PENDING, target=WagerState.ACCEPTED)
