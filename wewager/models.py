@@ -99,6 +99,10 @@ class Game(models.Model):
     def team_data(self):
         return TeamData.objects.filter(game=self)
 
+    @property
+    def is_spread_covered(self):
+        favorite = min(self.team_data, key=lambda t: t.spread)
+
     def add_team(self, team, spread, moneyline):
         return TeamData.objects.create(
             team=team, game=self, spread=spread, moneyline=moneyline
@@ -189,6 +193,9 @@ class Wager(models.Model):
         decimal_places=2,
         default_currency="USD",
         validators=[MinMoneyValidator(0)],
+    )
+    wager_type = models.CharField(
+        max_length=10, choices=WagerType.choices, default=WagerType.NORMAL
     )
     status = FSMField(default=WagerState.PENDING)
 

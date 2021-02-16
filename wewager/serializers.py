@@ -58,6 +58,7 @@ class WagerSerializer(serializers.ModelSerializer):
             "sender_side",
             "amount",
             "status",
+            "wager_type",
         )
 
     def get_opponent(self, wager):
@@ -80,9 +81,12 @@ class WagerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Wager
-        fields = ("game", "team", "sender_side", "recipient", "amount")
+        fields = ("game", "team", "sender_side", "recipient", "amount", "wager_type")
 
     def create(self, data):
+        if data.get("wager_type") != WagerType.NORMAL:
+            raise ParseError("Only normal wagers are currently supported.")
+
         amount = Money(data.get("amount"), "USD")
         if amount < Money(0, "USD"):
             raise ParseError(detail="Amount must not be negative.")

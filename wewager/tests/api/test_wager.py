@@ -61,6 +61,7 @@ class UserTestCase(APITestCase):
             "sender_side",
             "amount",
             "status",
+            "wager_type"
         )
         self.assertTrue((x in response.data for x in expected_fields))
 
@@ -81,6 +82,7 @@ class UserTestCase(APITestCase):
             "sender_side": "W",
             "recipient": self.you.id,
             "amount": 10,
+            "wager_type": "normal" 
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -92,6 +94,7 @@ class UserTestCase(APITestCase):
             "sender_side": "W",
             "recipient": self.you.id,
             "amount": -10,
+            "wager_type": "normal"
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -103,6 +106,7 @@ class UserTestCase(APITestCase):
             "sender_side": "W",
             "recipient": 21,
             "amount": 10,
+            "wager_type": "normal"
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -114,6 +118,7 @@ class UserTestCase(APITestCase):
             "sender_side": "A",
             "recipient": self.you.id,
             "amount": 10,
+            "wager_type": "normal"
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -125,6 +130,7 @@ class UserTestCase(APITestCase):
             "sender_side": "W",
             "recipient": self.you.id,
             "amount": 10,
+            "wager_type": "normal"
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -136,6 +142,7 @@ class UserTestCase(APITestCase):
             "sender_side": "W",
             "recipient": self.you.id,
             "amount": 10,
+            "wager_type": "normal"
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -147,6 +154,19 @@ class UserTestCase(APITestCase):
             "sender_side": "W",
             "recipient": self.me.id,
             "amount": 10,
+            "wager_type": "normal"
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_wager_not_normal(self):
+        payload = {
+            "game": self.game.id,
+            "team": self.team_data.id,
+            "sender_side": "W",
+            "recipient": self.you.id,
+            "amount": 10,
+            "wager_type": "spread"
+        }
+        response = self.client.post(f"/api/v1/wager/", data=payload)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST) 
