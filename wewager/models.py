@@ -268,4 +268,9 @@ class Wager(models.Model):
             WagerSide.WIN if self.game.winner == self.team.team else WagerSide.LOSE
         )
         winner = self.sender if self.sender_side == winning_side else self.recipient
-        Wallet.add_balance(winner, 2 * self.amount, TransactionType.WIN)
+        if self.wager_type == WagerType.NORMAL:
+            payout = 2 * self.amount
+        elif self.wager_type == WagerType.MONEYLINE:
+            payout = self.amount + self.recipient_amount
+        
+        Wallet.add_balance(winner, payout, TransactionType.WIN)
