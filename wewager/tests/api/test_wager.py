@@ -17,13 +17,11 @@ class UserTestCase(APITestCase):
         self.me = User.objects.create_user(
             username="myname", email="myname@wewager.io", password="hunter42"
         )
-        self.me.wallet.add_balance(Money(100, "USD"), TransactionType.DEPOSIT)
-        self.me.wallet.save()
+        Wallet.add_balance(self.me , Money(100, "USD"), TransactionType.DEPOSIT)
         self.you = User.objects.create_user(
             username="yourname", email="yourname@wewager.io", password="42hunter"
         )
-        self.you.wallet.add_balance(Money(100, "USD"), TransactionType.DEPOSIT)
-        self.you.wallet.save()
+        Wallet.add_balance(self.you, Money(100, "USD"), TransactionType.DEPOSIT)
 
         self.home = Team.objects.create(city="Philadelphia", name="76ers", abbr="PHI")
         self.away = Team.objects.create(city="Toronto", name="Raptors", abbr="TOR")
@@ -158,15 +156,3 @@ class UserTestCase(APITestCase):
         }
         response = self.client.post(f"/api/v1/wager/", data=payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_create_wager_not_normal(self):
-        payload = {
-            "game": self.game.id,
-            "team": self.team_data.id,
-            "sender_side": "W",
-            "recipient": self.you.id,
-            "amount": 10,
-            "wager_type": "spread"
-        }
-        response = self.client.post(f"/api/v1/wager/", data=payload)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST) 

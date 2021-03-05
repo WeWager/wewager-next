@@ -2,7 +2,7 @@ from enum import Enum
 
 from .exceptions import BalanceTooLow
 
-from django.db import models
+from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
@@ -38,20 +38,30 @@ class Wallet(models.Model):
     def get_all_transactions(self):
         return Transaction.objects.filter(wallet=self)
 
-    def add_balance(self, amount, transaction_type):
-        self.balance += amount
-        Transaction.objects.create(
-            wallet=self, amount=amount, transaction_type=transaction_type
-        )
+    @classmethod
+    def add_balance(cls, user, amount, transaction_type):
+        with transaction.atomic():
+            wallet = cls.objects.select_for_update().get(user=user)
+            wallet.balance += amount
+            Transaction.objects.create(
+                wallet=wallet, amount=amount, transaction_type=transaction_type
+            )
+        wallet.save()
+        return wallet
+        
 
-    def deduct_balance(self, amount, transaction_type):
-        if self.balance < amount:
-            raise BalanceTooLow()
-        self.balance -= amount
-        Transaction.objects.create(
-            wallet=self, amount=amount, transaction_type=transaction_type
-        )
-        return True
+    @classmethod
+    def deduct_balance(cls, user, amount, transaction_type):
+        with transaction.atomic():
+            wallet = cls.objects.select_for_update().get(user=user)
+            if wallet.balance < amount:
+                raise BalanceTooLow()
+            wallet.balance -= amount
+            Transaction.objects.create(
+                wallet=wallet, amount=amount, transaction_type=transaction_type
+            )
+        wallet.save()
+        return wallet
 
     def __str__(self):
         return f"<Wallet {self.user.username} {self.balance}>"
@@ -77,6 +87,7 @@ class Team(models.Model):
     city = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
     abbr = models.CharField(max_length=5)
+    teamUid = models.CharField(max_length=7)
 
     @property
     def full_name(self):
@@ -89,6 +100,7 @@ class Team(models.Model):
 class Game(models.Model):
     date = models.DateTimeField()
     winner = models.ForeignKey(Team, null=True, blank=True, on_delete=models.CASCADE)
+    gameUid = models.CharField(max_length=7)
     data = models.JSONField(null=True, blank=True)
 
     @property
@@ -98,6 +110,21 @@ class Game(models.Model):
     @property
     def team_data(self):
         return TeamData.objects.filter(game=self)
+
+    @property
+    def num_teams(self):
+        return TeamData.objects.filter(game=self).count()
+
+    @property
+    def favorite(self):
+        return min(self.team_data, key=lambda t: t.moneyline)
+
+    @property
+    def underdog(self):
+        return max(self.team_data, key=lambda t: t.moneyline)
+
+    def get_opponent(self, team):
+        return next(x for x in self.team_data if x != team)
 
     @property
     def is_spread_covered(self):
@@ -133,10 +160,13 @@ def close_game(sender, **kwargs):
 
 
 class TeamData(models.Model):
+    description = models.CharField(max_length=45)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     spread = models.DecimalField(decimal_places=1, max_digits=3)
     moneyline = models.IntegerField()
+    winning_position = models.IntegerField(default=1)
+    end_position = models.IntegerField(null=True)
 
     def __str__(self):
         return f"<TeamData {self.team.abbr} {self.game.date}>"
@@ -168,13 +198,20 @@ class WagerManager(models.Manager):
         if sender == recipient:
             raise ParseError("You cannot send a wager to yourself.")
         amount = kwargs.get("amount", None)
+        
+        wager_type = kwargs.get("wager_type", None)
+        wager_side = kwargs.get("sender_side", None)
+        if wager_type == WagerType.MONEYLINE and wager_side == WagerSide.LOSE:
+            raise ParseError("You must take the winning side on a moneyline wager.")
+
         if (
             sender
             and amount
-            and sender.wallet.deduct_balance(amount, TransactionType.WAGER)
+            and Wallet.deduct_balance(sender, amount, transaction_type=TransactionType.WAGER)
         ):
             return super(WagerManager, self).create(*args, **kwargs)
         else:
+            print(sender, amount)
             raise BalanceTooLow()
 
 
@@ -199,20 +236,28 @@ class Wager(models.Model):
     )
     status = FSMField(default=WagerState.PENDING)
 
+    @property
+    def recipient_amount(self):
+        if self.wager_type != WagerType.MONEYLINE:
+            return self.amount
+        odds = abs(self.team.moneyline)
+        sender_favorite = self.team.moneyline < 0
+        if sender_favorite:
+            return (100 / odds) * self.amount
+        else:
+            return (odds / 100) * self.amount
+        
     @transition(field=status, source=WagerState.PENDING, target=WagerState.ACCEPTED)
     def accept(self):
-        self.recipient.wallet.deduct_balance(self.amount, TransactionType.WAGER)
-        self.recipient.wallet.save()
+        Wallet.deduct_balance(self.recipient, self.amount, TransactionType.WAGER)
 
     @transition(field=status, source=WagerState.PENDING, target=WagerState.DECLINED)
     def decline(self):
-        self.sender.wallet.add_balance(self.amount, TransactionType.DECLINE)
-        self.sender.wallet.save()
+        Wallet.add_balance(self.sender, self.amount, TransactionType.DECLINE)
 
     @transition(field=status, source=WagerState.PENDING, target=WagerState.EXPIRED)
     def expire(self):
-        self.sender.wallet.add_balance(self.amount, TransactionType.EXPIRE)
-        self.sender.wallet.save()
+        Wallet.add_balance(self.sender, self.amount, TransactionType.EXPIRE)
 
     @transition(field=status, source=WagerState.ACCEPTED, target=WagerState.COMPLETED)
     def complete(self):
@@ -223,5 +268,4 @@ class Wager(models.Model):
             WagerSide.WIN if self.game.winner == self.team.team else WagerSide.LOSE
         )
         winner = self.sender if self.sender_side == winning_side else self.recipient
-        winner.wallet.add_balance(2 * self.amount, TransactionType.WIN)
-        winner.wallet.save()
+        Wallet.add_balance(winner, 2 * self.amount, TransactionType.WIN)

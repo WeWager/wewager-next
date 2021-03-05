@@ -1,7 +1,7 @@
 import pytz
 from datetime import datetime
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.contrib.auth import get_user_model
 
 from wewager.exceptions import BalanceTooLow
@@ -18,13 +18,13 @@ class WalletTestCase(TestCase):
 
     def test_add_balance(self):
         self.assertEqual(len(self.user.wallet.get_all_transactions()), 0)
-        self.user.wallet.add_balance(Money(50, "USD"), TransactionType.DEPOSIT)
-        transactions = self.user.wallet.get_all_transactions()
+        wallet = Wallet.add_balance(self.user, Money(50, "USD"), TransactionType.DEPOSIT)
+        transactions = wallet.get_all_transactions()
         self.assertEqual(len(transactions), 1)
-        self.assertEqual(self.user.wallet.balance, Money(50, "USD"))
+        self.assertEqual(wallet.balance, Money(50, "USD"))
 
-        self.user.wallet.deduct_balance(Money(50, "USD"), TransactionType.WITHDRAWAL)
-        self.assertEqual(self.user.wallet.balance, Money(0, "USD"))
+        wallet = Wallet.deduct_balance(self.user, Money(50, "USD"), TransactionType.WITHDRAWAL)
+        self.assertEqual(wallet.balance, Money(0, "USD"))
 
 
 class TeamTestCase(TestCase):
@@ -52,22 +52,28 @@ class TeamTestCase(TestCase):
         assert self.game.winner == self.home
 
 
-class WagerTestClass(TestCase):
+class WagerTestClass(TransactionTestCase):
     def setUp(self):
         self.me = get_user_model().objects.create_user(
             username="myname", email="myname@wewager.io", password="hunter42"
         )
-        self.me.wallet.add_balance(Money(100, "USD"), TransactionType.DEPOSIT)
+        Wallet.add_balance(self.me, Money(100, "USD"), TransactionType.DEPOSIT)
+        self.me.refresh_from_db()
         self.you = get_user_model().objects.create_user(
             username="yourname", email="yourname@wewager.io", password="42hunter"
         )
-        self.you.wallet.add_balance(Money(100, "USD"), TransactionType.DEPOSIT)
+        Wallet.add_balance(self.you, Money(100, "USD"), TransactionType.DEPOSIT)
+        self.you.refresh_from_db()
 
         self.home = Team.objects.create(city="Philadelphia", name="76ers", abbr="PHI")
         self.away = Team.objects.create(city="Toronto", name="Raptors", abbr="TOR")
         self.game = Game.objects.create(date=datetime.now(pytz.utc))
         self.game.add_team(self.home, -3.5, -140)
         self.game.add_team(self.away, 3.5, 150)
+
+    def update(self):
+        self.me.refresh_from_db()
+        self.you.refresh_from_db()
 
     def test_sender_win(self):
         team_data = next(x for x in self.game.team_data if x.team.abbr == "PHI")
@@ -79,6 +85,7 @@ class WagerTestClass(TestCase):
             recipient=self.you,
             amount=Money(10, "USD"),
         )
+        self.update()
         assert wager != None
         assert wager.status == WagerState.PENDING
         assert self.me.wallet.balance == Money(90, "USD")
@@ -86,11 +93,13 @@ class WagerTestClass(TestCase):
 
         wager.accept()
         assert wager.status == WagerState.ACCEPTED
+        self.update()
         assert self.me.wallet.balance == Money(90, "USD")
         assert self.you.wallet.balance == Money(90, "USD")
 
         wager.game.set_winner(self.home)
         wager.complete()
+        self.update()
         assert wager.status == WagerState.COMPLETED
         assert self.me.wallet.balance == Money(110, "USD")
         assert self.you.wallet.balance == Money(90, "USD")
@@ -105,18 +114,21 @@ class WagerTestClass(TestCase):
             recipient=self.you,
             amount=Money(10, "USD"),
         )
+        self.update()
         assert wager != None
         assert wager.status == WagerState.PENDING
         assert self.me.wallet.balance == Money(90, "USD")
         assert self.you.wallet.balance == Money(100, "USD")
 
         wager.accept()
+        self.update()
         assert wager.status == WagerState.ACCEPTED
         assert self.me.wallet.balance == Money(90, "USD")
         assert self.you.wallet.balance == Money(90, "USD")
 
         wager.game.set_winner(self.away)
         wager.complete()
+        self.update()
         assert wager.status == WagerState.COMPLETED
         assert self.me.wallet.balance == Money(90, "USD")
         assert self.you.wallet.balance == Money(110, "USD")
@@ -131,12 +143,14 @@ class WagerTestClass(TestCase):
             recipient=self.you,
             amount=Money(10, "USD"),
         )
+        self.update()
         assert wager != None
         assert wager.status == WagerState.PENDING
         assert self.me.wallet.balance == Money(90, "USD")
         assert self.you.wallet.balance == Money(100, "USD")
 
         wager.decline()
+        self.update()
         assert wager.status == WagerState.DECLINED
         assert self.me.wallet.balance == Money(100, "USD")
         assert self.you.wallet.balance == Money(100, "USD")
