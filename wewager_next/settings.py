@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "djmoney",
     "rest_framework",
     "rest_framework.authtoken",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 MIDDLEWARE = [
