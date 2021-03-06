@@ -36,15 +36,16 @@ class WagerTestClass(TransactionTestCase):
         self.game.add_team(self.home, -3.5, -140)
         self.game.add_team(self.away, 3.5, 150)
 
+        self.team_data = next(x for x in self.game.team_data if x.team.abbr == "PHI")
+
     def update(self):
         self.me.refresh_from_db()
         self.you.refresh_from_db()
 
     def test_sender_win(self):
-        team_data = next(x for x in self.game.team_data if x.team.abbr == "PHI")
         wager = Wager.objects.create_wager(
             game=self.game,
-            team=team_data,
+            team=self.team_data,
             sender=self.me,
             sender_side=WagerSide.WIN,
             recipient=self.you,
@@ -70,10 +71,9 @@ class WagerTestClass(TransactionTestCase):
         assert self.you.wallet.balance == Money(90, "USD")
 
     def test_recipient_win(self):
-        team_data = next(x for x in self.game.team_data if x.team.abbr == "PHI")
         wager = Wager.objects.create_wager(
             game=self.game,
-            team=team_data,
+            team=self.team_data,
             sender=self.me,
             sender_side=WagerSide.WIN,
             recipient=self.you,
@@ -99,10 +99,9 @@ class WagerTestClass(TransactionTestCase):
         assert self.you.wallet.balance == Money(110, "USD")
 
     def test_recipient_decline(self):
-        team_data = next(x for x in self.game.team_data if x.team.abbr == "PHI")
         wager = Wager.objects.create_wager(
             game=self.game,
-            team=team_data,
+            team=self.team_data,
             sender=self.me,
             sender_side=WagerSide.WIN,
             recipient=self.you,
@@ -121,12 +120,11 @@ class WagerTestClass(TransactionTestCase):
         assert self.you.wallet.balance == Money(100, "USD")
 
     def test_sender_balance_too_low(self):
-        team_data = next(x for x in self.game.team_data if x.team.abbr == "PHI")
         self.assertRaises(
             BalanceTooLow,
             Wager.objects.create_wager,
             game=self.game,
-            team=team_data,
+            team=self.team_data,
             sender=self.me,
             sender_side=WagerSide.WIN,
             recipient=self.you,
@@ -134,4 +132,18 @@ class WagerTestClass(TransactionTestCase):
         )
 
     def test_recipient_balance_too_low(self):
-        pass
+        Wallet.deduct_balance(self.you, Money(100, "USD"), TransactionType.WITHDRAWAL)
+        self.update()
+        wager = Wager.objects.create_wager(
+            game=self.game,
+            team=self.team_data,
+            sender=self.me,
+            sender_side=WagerSide.WIN,
+            recipient=self.you,
+            amount=Money(100, "USD")
+        )
+        self.update()
+        self.assertRaises(
+            BalanceTooLow,
+            wager.accept
+        )
