@@ -5,6 +5,7 @@ import django.db.models.deletion
 import django_fsm
 import djmoney.models.fields
 import wewager.models
+import wewager.models.wager
 
 
 class Migration(migrations.Migration):
@@ -249,7 +250,7 @@ class Migration(migrations.Migration):
                 (
                     "status",
                     django_fsm.FSMField(
-                        default=wewager.models.WagerState["PENDING"], max_length=50
+                        default=wewager.models.WagerState.PENDING, max_length=50
                     ),
                 ),
                 (
