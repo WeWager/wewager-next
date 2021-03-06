@@ -26,7 +26,6 @@ class Wallet(models.Model):
         wallet.save()
         return wallet
 
-
     @classmethod
     def deduct_balance(cls, user, amount, transaction_type):
         with transaction.atomic():

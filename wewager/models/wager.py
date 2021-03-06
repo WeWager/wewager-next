@@ -29,7 +29,9 @@ class WagerManager(models.Manager):
         if (
             sender
             and amount
-            and Wallet.deduct_balance(sender, amount, transaction_type=TransactionType.WAGER)
+            and Wallet.deduct_balance(
+                sender, amount, transaction_type=TransactionType.WAGER
+            )
         ):
             return super(WagerManager, self).create(*args, **kwargs)
         else:

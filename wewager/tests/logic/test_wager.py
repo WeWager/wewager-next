@@ -6,7 +6,15 @@ from django.test import TransactionTestCase
 from djmoney.money import Money
 
 from wewager.exceptions import BalanceTooLow
-from wewager.models import Wallet, TransactionType, Team, Game, Wager, WagerSide, WagerState
+from wewager.models import (
+    Wallet,
+    TransactionType,
+    Team,
+    Game,
+    Wager,
+    WagerSide,
+    WagerState,
+)
 
 
 class WagerTestClass(TransactionTestCase):

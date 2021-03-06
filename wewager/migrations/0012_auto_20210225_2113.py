@@ -6,19 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0011_auto_20210209_0020'),
+        ("wewager", "0011_auto_20210209_0020"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='teamdata',
-            name='description',
-            field=models.CharField(default='', max_length=45),
+            model_name="teamdata",
+            name="description",
+            field=models.CharField(default="", max_length=45),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='teamdata',
-            name='winning_position',
+            model_name="teamdata",
+            name="winning_position",
             field=models.IntegerField(default=1),
             preserve_default=False,
         ),

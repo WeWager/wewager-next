@@ -17,7 +17,7 @@ class Game(models.Model):
 
     @property
     def team_data(self):
-        TeamData = apps.get_model("wewager" ,"TeamData")
+        TeamData = apps.get_model("wewager", "TeamData")
         return TeamData.objects.filter(game=self)
 
     @property
