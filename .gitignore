@@ -153,4 +153,7 @@ dmypy.json
 # Visual Studio Code
 .vscode/
 
+# PyCharm
+.idea/
+
 # End of https://www.toptal.com/developers/gitignore/api/django

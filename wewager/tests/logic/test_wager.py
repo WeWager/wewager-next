@@ -1,55 +1,12 @@
-import pytz
 from datetime import datetime
 
-from django.test import TestCase, TransactionTestCase
+import pytz
 from django.contrib.auth import get_user_model
-
-from wewager.exceptions import BalanceTooLow
-from wewager.models import *
-
+from django.test import TransactionTestCase
 from djmoney.money import Money
 
-
-class WalletTestCase(TestCase):
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            username="testuser", email="test@wewager.io", password="top_secret"
-        )
-
-    def test_add_balance(self):
-        self.assertEqual(len(self.user.wallet.get_all_transactions()), 0)
-        wallet = Wallet.add_balance(self.user, Money(50, "USD"), TransactionType.DEPOSIT)
-        transactions = wallet.get_all_transactions()
-        self.assertEqual(len(transactions), 1)
-        self.assertEqual(wallet.balance, Money(50, "USD"))
-
-        wallet = Wallet.deduct_balance(self.user, Money(50, "USD"), TransactionType.WITHDRAWAL)
-        self.assertEqual(wallet.balance, Money(0, "USD"))
-
-
-class TeamTestCase(TestCase):
-    def setUp(self):
-        self.home = Team.objects.create(city="Philadelphia", name="76ers", abbr="PHI")
-        self.away = Team.objects.create(city="Toronto", name="Raptors", abbr="TOR")
-        self.other = Team.objects.create(city="Boston", name="Celtics", abbr="BOS")
-        self.game = Game.objects.create(date=datetime.now(pytz.utc))
-
-    def test_add_team_to_game(self):
-        self.game.add_team(self.home, -2.5, -140)
-        self.game.add_team(self.away, 2.5, 150)
-        teams = self.game.teams
-        assert self.home in teams
-        assert self.away in teams
-        assert len(teams) == 2
-
-    def test_set_winner(self):
-        assert self.game.winner == None
-        self.game.add_team(self.home, -2.5, -140)
-        self.game.add_team(self.away, 2.5, 150)
-        self.game.set_winner(self.other)
-        assert self.game.winner == None
-        self.game.set_winner(self.home)
-        assert self.game.winner == self.home
+from wewager.exceptions import BalanceTooLow
+from wewager.models import Wallet, TransactionType, Team, Game, Wager, WagerSide, WagerState
 
 
 class WagerTestClass(TransactionTestCase):
