@@ -5,6 +5,7 @@ import django.db.models.deletion
 import django_fsm
 import djmoney.models.fields
 import wewager.models
+import wewager.models.wager
 
 
 class Migration(migrations.Migration):

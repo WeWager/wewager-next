@@ -2,15 +2,15 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views as auth_views
 
-from . import views
+import wewager.views
 
 router = DefaultRouter()
-router.register(r"user", views.UserViewSet, basename="user")
-router.register(r"game", views.GameViewSet, basename="game")
-router.register(r"wager", views.WagerViewSet, basename="wager")
+router.register(r"user", wewager.views.UserViewSet, basename="user")
+router.register(r"game", wewager.views.GameViewSet, basename="game")
+router.register(r"wager", wewager.views.WagerViewSet, basename="wager")
 
 v1_urlpatterns = [
-    path("wallet/", views.WalletViewSet.as_view(), name="wallet"),
+    path("wallet/", wewager.views.WalletViewSet.as_view(), name="wallet"),
     path("api-token-auth/", auth_views.obtain_auth_token),
 ]
 

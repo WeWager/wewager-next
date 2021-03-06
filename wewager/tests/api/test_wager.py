@@ -1,13 +1,12 @@
 import pytz
 from datetime import datetime
 
-from django.urls import reverse
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth.models import User
 
-from wewager.models import Team, Game, Wallet, TransactionType, Wager, WagerSide
+from wewager.models import Team, Game, TransactionType, Wager, WagerSide
+from wewager.models.wallet import Wallet
 
 from moneyed import Money
 
