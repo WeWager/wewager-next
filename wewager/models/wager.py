@@ -35,7 +35,6 @@ class WagerManager(models.Manager):
         ):
             return super(WagerManager, self).create(*args, **kwargs)
         else:
-            print(sender, amount)
             raise BalanceTooLow()
 
 
@@ -92,7 +91,7 @@ class Wager(models.Model):
 
     @transition(field=status, source=WagerState.PENDING, target=WagerState.ACCEPTED)
     def accept(self):
-        Wallet.deduct_balance(self.recipient, self.amount, TransactionType.WAGER)
+        Wallet.deduct_balance(self.recipient, self.recipient_amount, TransactionType.WAGER)
 
     @transition(field=status, source=WagerState.PENDING, target=WagerState.DECLINED)
     def decline(self):
