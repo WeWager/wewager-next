@@ -9,6 +9,19 @@ from wewager.models import Transaction
 
 
 class Wallet(models.Model):
+    """
+    Wallet relates a user to a balance, represented in USD with protections againt
+    floating-point errors via the **djmoney** package.
+
+    NOTE: All edits to __balance__ must go through the given classmethods. These
+    methods acquire a lock on the row being edited to avoid a race condition.
+    Please exercise caution when editing a balance.
+
+    Any test classes that edit and assert on the user's balance should use
+    __TransactionTestCase__. This base class does not use transactions for each
+    test, allowing you to use refresh_from_db() to update the balance.
+    """
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     balance = MoneyField(max_digits=10, decimal_places=2, default_currency="USD")
 
