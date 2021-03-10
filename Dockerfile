@@ -16,7 +16,7 @@ COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 
 # copy project
-COPY ./migrate.sh /usr/src/app/migrate.sh
+COPY ./run.sh /usr/src/app/run.sh
 COPY . /usr/src/app/
 
 EXPOSE 8000 80 443
