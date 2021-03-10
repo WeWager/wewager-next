@@ -7,7 +7,7 @@ WORKDIR /install
 
 # Install requirements and libraries.
 #   --no-cache allows users to install packages with an index that is updated and used on-the-fly and not cached locally
-RUN apk --no-cache --quiet add gcc make g++ bash git openssh \
+RUN apk --no-cache add gcc make g++ bash git openssh \
     postgresql-dev curl build-base libffi-dev python-dev py-pip \
     jpeg-dev zlib-dev libsass-dev
 
