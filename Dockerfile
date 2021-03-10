@@ -21,4 +21,4 @@ COPY . /usr/src/app/
 
 EXPOSE 8000 80 443
 
-ENTRYPOINT [ "/usr/src/app/run.sh" ]
+CMD sh /usr/src/app/run.sh
