@@ -79,6 +79,10 @@ class Wager(models.Model):
     status = FSMField(default=WagerState.PENDING)
 
     @property
+    def sender_side_full(self):
+        return "Win" if self.sender_side == WagerSide.WIN else "Lose"
+
+    @property
     def recipient_amount(self):
         if self.wager_type != WagerType.MONEYLINE:
             return self.amount

@@ -5,8 +5,8 @@ from rest_framework.response import Response
 
 from wewager.models import Wager
 from wewager.serializers import WagerSerializer, WagerCreateSerializer
-from wewager.views.mixins import ReadWriteSerializerMixin
-from wewager.views.viewsets import CreateListRetrieveViewSet
+from wewager.views.api.mixins import ReadWriteSerializerMixin
+from wewager.views.api.viewsets import CreateListRetrieveViewSet
 
 
 class WagerViewSet(ReadWriteSerializerMixin, CreateListRetrieveViewSet):
