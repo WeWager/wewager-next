@@ -1,0 +1,15 @@
+name: Deploy to Production
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: CapRover Deploy
+        uses: AlexxNB/caprover-action@v1
+        with:
+          server: https://https://captain.next.wewager.io/
+          password: ${{ secrets.CAPROVER_PASS }}
+          appname: api
+          branch: main
