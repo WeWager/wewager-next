@@ -1,20 +1,15 @@
 import os
-import environ
 from pathlib import Path
 
-env = environ.Env(DEBUG=(bool, True), ALLOWED_HOSTS=(list, []))
-
-if not os.environ.get("PRODUCTION", False):
-    environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = "dontusethisinprod"
 
-DEBUG = env("DEBUG")
+DEBUG = True
 
-ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -31,7 +26,6 @@ INSTALLED_APPS = [
     "djmoney",
     "rest_framework",
     "rest_framework.authtoken",
-    "drf_yasg"
 ]
 
 MIDDLEWARE = [
@@ -76,12 +70,11 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
-    "default": env.db(),
-    # read os.environ['SQLITE_URL']
-    "extra": env.db("SQLITE_URL", default="sqlite:////tmp/my-tmp-sqlite.db"),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -123,35 +116,3 @@ STATIC_URL = "/static/"
 
 # Third Party App Settings
 DEFAULT_CURRENCY = "USD"
-
-# S3
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3StaticStorage"
-
-AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-
-AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
-AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
-AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
-AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
-AWS_DEFAULT_ACL = env("AWS_DEFAULT_ACL")
-AWS_IS_GZIPPED = True
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
-}
-
-
-# Swagger/OpenAPI
-SWAGGER_SETTINGS = {
-   'SECURITY_DEFINITIONS': {
-      'Basic': {
-            'type': 'basic'
-      },
-      'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-      }
-   }
-}
