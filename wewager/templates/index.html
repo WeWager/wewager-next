@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="pure-menu pure-menu-horizontal container">
+    <a href="#" class="pure-menu-heading pure-menu-link">WeWager Next</a>
+    <ul class="pure-menu-list">
+        <li class="pure-menu-item">
+            <a href="#" class="pure-menu-link" 
+            hx-get="/games/"
+            hx-target="#content"
+            hx-push-url="true">
+                Games
+            </a>
+        </li>
+        <li class="pure-menu-item">
+            <a href="#" class="pure-menu-link"
+            hx-get="/wagers/"
+            hx-target="#content"
+            hx-push-url="true">
+            Wagers</a>
+        </li>
+        <li class="pure-menu-item" onclick="emit('updateBal')">
+            <p hx-get="/partial/balance/"
+            hx-trigger="updateBal">
+                {{ request.user.wallet.balance }}
+            </p>
+        </li>
+    </ul>
+</div>
+
+<div id="content">
+   {% block view %}
+   {% endblock view %} 
+</div>
+{% endblock content %}

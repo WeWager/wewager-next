@@ -1,0 +1,12 @@
+{% extends base_template %}
+
+{% block view %}
+<div class="container">
+    <h2 style="margin-left: 50px;">Sent Wagers</h2>
+    <ul style="display: flex; flex-wrap: wrap;">
+        {% for wager in sent_wagers %}
+        {% include 'components/_wager_row.html' with wager=wager opp=wager.recipient amount=wager.amount %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock view %}
