@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: CapRover Deploy
-        uses: AlexxNB/caprover-action@v1
+        uses: floms/action-caprover@v1
         with:
-          server: https://https://captain.next.wewager.io/
+          host: https://https://captain.next.wewager.io/
           password: ${{ secrets.CAPROVER_PASS }}
-          appname: api
+          app: api
           branch: main
