@@ -42,6 +42,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "wewager_next.urls"
@@ -49,7 +50,7 @@ ROOT_URLCONF = "wewager_next.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ["templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -139,4 +140,19 @@ AWS_DEFAULT_ACL = env("AWS_DEFAULT_ACL")
 AWS_IS_GZIPPED = True
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
+}
+
+
+# Swagger/OpenAPI
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Basic': {
+            'type': 'basic'
+      },
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }

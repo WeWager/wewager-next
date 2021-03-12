@@ -16,4 +16,19 @@ v1_urlpatterns = [
 
 v1_urlpatterns += router.urls
 
-urlpatterns = [path("api/v1/", include(v1_urlpatterns))]
+web_urlpatterns = [
+    path("", wewager.views.IndexView.as_view(), name="index"),
+    path("games/", wewager.views.GamesView.as_view(), name="games"),
+    path("wagers/", wewager.views.WagerView.as_view(), name="wagers")
+]
+
+partial_urlpatterns = [
+    path("balance/", wewager.views.balance_view, name="balance")
+]
+
+urlpatterns = [
+    path("api/v1/", include(v1_urlpatterns)),
+    path("", include(web_urlpatterns)),
+    path("partial/", include(partial_urlpatterns)),
+    path('accounts/', include('django.contrib.auth.urls')),
+]

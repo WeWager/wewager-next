@@ -1,0 +1,14 @@
+<style>
+    .single-wager {
+        border: 1px solid black;
+        margin: 10px;
+        padding: 10px;
+    }
+</style>
+
+<div class="single-wager">
+    <p>You vs. {{ opp.username }} -- {{ amount }} {{ wager.status }}</p>
+    <p>{{ wager.game.description }} @ {{ wager.game.date }}</p>
+    <p>on {{ wager.team.team.full_name }} ({{wager.team.spread}}) ({{wager.team.moneyline}})
+        to {{ wager.sender_side_full | lower }}</p>
+</div>

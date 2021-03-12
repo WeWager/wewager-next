@@ -11,6 +11,13 @@ class Game(models.Model):
     data = models.JSONField(null=True, blank=True)
 
     @property
+    def description(self):
+        teams = self.teams
+        if len(teams) == 2:
+            return f"{teams[0].full_name} vs. {teams[1].full_name}"
+        return self.__str__()
+
+    @property
     def teams(self):
         TeamData = apps.get_model("wewager", "TeamData")
         return [x.team for x in TeamData.objects.filter(game=self)]
