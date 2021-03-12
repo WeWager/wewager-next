@@ -2,9 +2,10 @@ from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
+from drf_yasg.utils import swagger_auto_schema, no_body
 
 from wewager.models import Wager
-from wewager.serializers import WagerSerializer, WagerCreateSerializer
+from wewager.serializers import WagerSerializer, WagerCreateSerializer, EmptySerializer
 from wewager.views.api.mixins import ReadWriteSerializerMixin
 from wewager.views.api.viewsets import CreateListRetrieveViewSet
 
@@ -28,6 +29,7 @@ class WagerViewSet(ReadWriteSerializerMixin, CreateListRetrieveViewSet):
     def get_serializer_context(self):
         return {"user": self.request.user}
 
+    @swagger_auto_schema(method="post", request_body=EmptySerializer)
     @action(detail=True, methods=["POST"])
     def accept(self, request, pk=None):
         wager = self.get_object()
@@ -38,6 +40,7 @@ class WagerViewSet(ReadWriteSerializerMixin, CreateListRetrieveViewSet):
         serializer = WagerSerializer(wager)
         return Response(serializer.data)
 
+    @swagger_auto_schema(method="post", request_body=EmptySerializer)
     @action(detail=True, methods=["POST"])
     def decline(self, request, pk=None):
         wager = self.get_object()

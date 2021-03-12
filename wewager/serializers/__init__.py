@@ -4,3 +4,4 @@ from .team_data import *
 from .user import *
 from .wager import *
 from .wallet import *
+from .empty import *
