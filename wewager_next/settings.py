@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     "djmoney",
     "rest_framework",
     "rest_framework.authtoken",
-    "drf_yasg"
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -145,14 +145,8 @@ AWS_S3_OBJECT_PARAMETERS = {
 
 # Swagger/OpenAPI
 SWAGGER_SETTINGS = {
-   'SECURITY_DEFINITIONS': {
-      'Basic': {
-            'type': 'basic'
-      },
-      'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
-      }
-   }
+    "SECURITY_DEFINITIONS": {
+        "Basic": {"type": "basic"},
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
+    }
 }

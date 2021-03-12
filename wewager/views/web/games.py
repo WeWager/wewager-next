@@ -1,6 +1,7 @@
 from wewager.models import Game
 from wewager.views.web.htmx_view import HtmxTemplateView
 
+
 class GamesView(HtmxTemplateView):
 
     template_name = "games.html"
