@@ -1,7 +1,7 @@
 <h1 align="center">WeWager API Next</h1>
 
 <p align="center">
-  <img width="400" height="400" src="https://avatars.githubusercontent.com/u/63665038?s=400&u=5d666a2261b1aa87ccaa8bdf86763a40c3446705&v=4">
+  <img width="200" height="200" src="https://avatars.githubusercontent.com/u/63665038?s=400&u=5d666a2261b1aa87ccaa8bdf86763a40c3446705&v=4">
 </p>
 
 <div align="center">
