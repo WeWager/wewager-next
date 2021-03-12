@@ -31,6 +31,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Code Format Check
+      run: |
+        python -m black --check
     - name: Run Tests
       run: |
         python manage.py test --settings=wewager_next.test

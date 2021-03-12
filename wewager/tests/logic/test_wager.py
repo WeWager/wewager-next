@@ -14,7 +14,7 @@ from wewager.models import (
     Wager,
     WagerSide,
     WagerState,
-    WagerType
+    WagerType,
 )
 
 
@@ -145,13 +145,10 @@ class WagerTestClass(TransactionTestCase):
             sender=self.me,
             sender_side=WagerSide.WIN,
             recipient=self.you,
-            amount=Money(100, "USD")
+            amount=Money(100, "USD"),
         )
         self.update()
-        self.assertRaises(
-            BalanceTooLow,
-            wager.accept
-        )
+        self.assertRaises(BalanceTooLow, wager.accept)
 
 
 class MoneylineTestClass(TransactionTestCase):
@@ -166,7 +163,7 @@ class MoneylineTestClass(TransactionTestCase):
             sender_side=WagerSide.WIN,
             recipient=self.you,
             amount=Money(10, "USD"),
-            wager_type=WagerType.MONEYLINE
+            wager_type=WagerType.MONEYLINE,
         )
         self.update()
 
