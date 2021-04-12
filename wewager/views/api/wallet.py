@@ -1,17 +1,16 @@
-from rest_framework import views, permissions
-from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.permissions import IsAuthenticated
 
+from wewager.models import Wallet
 from wewager.serializers import WalletSerializer
 
 
-class WalletViewSet(views.APIView):
+class WalletViewSet(ReadOnlyModelViewSet):
     """
     /wallet
-    Read-only view for user's wallet
+    Read-only view for users' wallet
     """
 
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        serializer = WalletSerializer(request.user.wallet)
-        return Response(serializer.data)
+    queryset = Wallet.objects.all().order_by("-balance")
+    serializer_class = WalletSerializer
+    permission_classes = [IsAuthenticated]

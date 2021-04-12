@@ -1,6 +1,4 @@
-from django.urls import reverse
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth.models import User
 
@@ -14,18 +12,20 @@ class UserTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_get_user_list(self):
-        response = self.client.get("/api/v1/user/", format="json")
+        response = self.client.get("/api/v1/social/user/", format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_get_user(self):
-        response = self.client.get(f"/api/v1/user/{self.user.id}/", format="json")
+        response = self.client.get(
+            f"/api/v1/social/user/{self.user.id}/", format="json"
+        )
         expected_fields = ["avatar", "first_name", "last_name", "username"]
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue((x in response.data for x in expected_fields))
 
     def test_get_user_wallet(self):
-        response = self.client.get("/api/v1/wallet/", format="json")
+        response = self.client.get(f"/api/v1/wallet/{self.user.id}/", format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         balance = str(self.user.wallet.balance).lstrip("$")
-        self.assertEqual(response.data, {"balance": balance})
+        self.assertEqual(response.data, {"user": self.user.id, "balance": balance})

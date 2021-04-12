@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 
-from wewager.serializers.user import UserSerializer
+from social.serializers import UserSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

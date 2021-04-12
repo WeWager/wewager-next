@@ -6,8 +6,8 @@ from drf_yasg.utils import swagger_auto_schema, no_body
 
 from wewager.models import Wager
 from wewager.serializers import WagerSerializer, WagerCreateSerializer, EmptySerializer
-from wewager.views.api.mixins import ReadWriteSerializerMixin
-from wewager.views.api.viewsets import CreateListRetrieveViewSet
+from common.mixins import ReadWriteSerializerMixin
+from common.viewsets import CreateListRetrieveViewSet
 
 
 class WagerViewSet(ReadWriteSerializerMixin, CreateListRetrieveViewSet):

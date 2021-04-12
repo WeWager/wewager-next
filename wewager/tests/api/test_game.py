@@ -19,7 +19,7 @@ class GameTestCase(APITestCase):
     def test_get_game_list(self):
         response = self.client.get("/api/v1/game/", format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_get_game(self):
         response = self.client.get(f"/api/v1/game/{self.game.id}/", format="json")
