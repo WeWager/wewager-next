@@ -5,11 +5,11 @@ from wewager.models.team import Team
 
 
 class TeamData(models.Model):
-    description = models.CharField(max_length=45)
+    # description = models.CharField(max_length=45)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    spread = models.DecimalField(decimal_places=1, max_digits=3)
-    moneyline = models.IntegerField()
+    spread = models.DecimalField(decimal_places=1, max_digits=3, null=True)
+    moneyline = models.IntegerField(null=True)
     winning_position = models.IntegerField(default=1)
     end_position = models.IntegerField(null=True)
 

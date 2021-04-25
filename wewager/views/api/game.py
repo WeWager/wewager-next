@@ -14,5 +14,5 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
     Returns games currently in progress or in the future
     """
 
-    queryset = Game.objects.filter(date__gte=datetime.utcnow().replace(tzinfo=pytz.utc))
+    queryset = Game.objects.filter(ended=False).order_by("date")
     serializer_class = GameSerializer

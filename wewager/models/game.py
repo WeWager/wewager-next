@@ -5,17 +5,13 @@ from django.dispatch import receiver
 
 
 class Game(models.Model):
+    description = models.CharField(max_length=64)
     date = models.DateTimeField()
-    winner = models.ForeignKey("Team", null=True, blank=True, on_delete=models.CASCADE)
-    gameUid = models.CharField(max_length=7)
+    external_uid = models.CharField(max_length=64, unique=True)
     data = models.JSONField(null=True, blank=True)
-
-    @property
-    def description(self):
-        teams = self.teams
-        if len(teams) == 2:
-            return f"{teams[0].full_name} vs. {teams[1].full_name}"
-        return self.__str__()
+    league = models.CharField(max_length=10)
+    ended = models.BooleanField(default=False)
+    outcomes = models.ManyToManyField("GameOutcome")
 
     @property
     def teams(self):
@@ -53,17 +49,13 @@ class Game(models.Model):
             team=team, game=self, spread=spread, moneyline=moneyline
         )
 
-    def set_winner(self, team):
-        if team not in self.teams:
-            return None
-        self.winner = team
-
     def __str__(self):
-        return f"<Game #{self.id}>"
+        return f"[{self.league}] {self.description} {self.date}"
 
 
 @receiver(post_save, sender=Game)
 def close_game(sender, **kwargs):
+    return
     Wager = apps.get_model("wewager", "Wager")
     instance = kwargs.get("instance", None)
     if instance is None:

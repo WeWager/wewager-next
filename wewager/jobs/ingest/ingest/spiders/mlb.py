@@ -1,0 +1,33 @@
+import json
+from scrapy import Spider, Request
+from datetime import datetime
+
+from wewager.models import Game
+
+
+class MlbSpider(Spider):
+    name = "mlb"
+
+    def start_requests(self):
+        yield Request("https://bdfed.stitch.mlbinfra.com/bdfed/transform-mlb-scoreboard?stitch_env=prod&sortTemplate=4&sportId=1&startDate=2021-04-24&endDate=2021-04-24&gameType=E&&gameType=S&&gameType=R&&gameType=F&&gameType=D&&gameType=L&&gameType=W&&gameType=A&language=en&leagueId=104&&leagueId=103&contextTeamId=")
+
+        dt = datetime.today()
+        date = dt.strftime("%Y-%m-%d")
+        yield Request(f"https://statsapi.web.nhl.com/api/v1/schedule?startDate={date}&endDate={date}&hydrate=team(leaders(categories=[points,goals,assists],gameTypes=[R])),linescore,broadcasts(all),tickets,game(content(media(epg),highlights(scoreboard)),seriesSummary),radioBroadcasts,metadata,decisions,scoringplays,seriesSummary(series)&site=en_nhl&teamId=&gameType=&timecode=")
+
+    def parse(self, response):
+        data = json.loads(response.body)
+        for game in data["dates"][0]["games"]:
+            home_name = game["teams"]["home"]["team"]["name"]
+            away_name = game["teams"]["away"]["team"]["name"]
+            yield {
+                "__TYPE__": self.name,
+                "mlb_id": game["gamePk"],
+                "description": f"{away_name} vs {home_name}",
+                "participants": [
+                    {"name": home_name, "score": game["teams"]["home"].get("score", 0)},
+                    {"name": away_name, "score": game["teams"]["away"].get("score", 0)}
+                ],
+                "status": game["status"]["detailedState"],
+                "ended": game["status"]["detailedState"] == "Final"
+            }

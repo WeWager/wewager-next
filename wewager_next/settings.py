@@ -16,6 +16,8 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
+DATAFEEDS_API_KEY = env("DATAFEEDS_API_KEY")
+
 
 # Application definition
 
@@ -153,3 +155,27 @@ SWAGGER_SETTINGS = {
         "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"},
     }
 }
+
+"""
+LOGGING = {
+    "version": 1,
+    "filters": {
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "filters": ["require_debug_true"],
+            "class": "logging.StreamHandler",
+        }
+    },
+    "loggers": {
+        "django.db.backends": {
+            "level": "DEBUG",
+            "handlers": ["console"],
+        }
+    },
+}
+"""

@@ -13,8 +13,6 @@ class Post(models.Model):
 
     liked_by = models.ManyToManyField(User, blank=True)
 
-    replies = models.ManyToManyField("Comment", blank=True)
-
     def like(self, user):
         self.liked_by.add(user)
         self.save()

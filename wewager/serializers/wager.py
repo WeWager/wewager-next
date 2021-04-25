@@ -18,14 +18,13 @@ class WagerSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "game",
-            "team",
+            "outcome",
+            "sender",
             "opponent",
             "is_sender",
-            "sender_side",
-            "amount",
             "recipient_amount",
+            "amount",
             "status",
-            "wager_type",
         )
 
     def get_opponent(self, wager):
@@ -48,7 +47,23 @@ class WagerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Wager
-        fields = ("game", "team", "sender_side", "recipient", "amount", "wager_type")
+        fields = ("game", "outcome", "recipient", "amount")
+
+    def validate(self, data):
+        if self.context.get("user") == data["recipient"]:
+            raise serializers.ValidationError("You cannot send a wager to yourself.")
+
+        if self.context.get("user").wallet.balance < Money(data["amount"], "USD"):
+            raise serializers.ValidationError(
+                "You don't have enough money for this transaction."
+            )
+
+        if data["outcome"] not in data["game"].outcomes.all():
+            raise serializers.ValidationError(
+                "This outcome is not a part of this game."
+            )
+
+        return data
 
     def create(self, data):
         amount = Money(data.get("amount"), "USD")

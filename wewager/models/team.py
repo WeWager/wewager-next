@@ -5,7 +5,8 @@ class Team(models.Model):
     city = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
     abbr = models.CharField(max_length=5)
-    teamUid = models.CharField(max_length=7)
+    league = models.CharField(max_length=6)
+    teamUid = models.CharField(max_length=7, null=True)
 
     @property
     def full_name(self):

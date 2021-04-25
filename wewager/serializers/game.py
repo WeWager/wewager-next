@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from wewager.models import Game
-from wewager.serializers.team_data import TeamDataSerializer
+from wewager.models import Game, GameOutcome
+from wewager.serializers.game_outcome import GameOutcomeSerializer
 
 
 class GameSerializer(serializers.ModelSerializer):
-    team_data = TeamDataSerializer(many=True)
+    outcomes = GameOutcomeSerializer(many=True)
 
     class Meta:
         model = Game
-        fields = ("id", "date", "winner", "data", "team_data")
+        fields = ("id", "description", "date", "league", "ended", "data", "outcomes")
