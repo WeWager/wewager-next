@@ -2,6 +2,32 @@ FROM python:3.8.0-alpine
 RUN apk update && apk upgrade
 RUN apk add --no-cache jpeg-dev zlib-dev gcc libxslt-dev libc-dev
 RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev postgresql-dev
+RUN apk add --update \
+  build-base \
+  cairo \
+  cairo-dev \
+  cargo \
+  freetype-dev \
+  gcc \
+  gdk-pixbuf-dev \
+  gettext \
+  jpeg-dev \
+  lcms2-dev \
+  libffi-dev \
+  musl-dev \
+  openjpeg-dev \
+  openssl-dev \
+  pango-dev \
+  poppler-utils \
+  postgresql-client \
+  postgresql-dev \
+  py-cffi \
+  python3-dev \
+  rust \
+  tcl-dev \
+  tiff-dev \
+  tk-dev \
+  zlib-dev
 
 # set work directory
 WORKDIR /usr/src/app
@@ -9,6 +35,7 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 
 # install dependencies
 RUN pip install --upgrade pip
