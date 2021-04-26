@@ -12,7 +12,7 @@ RUN apt-get install -y --no-install-recommends \
   openssl-dev \
   postgresql-client \
   python3-dev \
-  python3-lxml \
+  python3-lxml 
 
 # set work directory
 WORKDIR /usr/src/app
