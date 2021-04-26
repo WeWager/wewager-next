@@ -7,26 +7,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0020_auto_20210423_0321'),
+        ("wewager", "0020_auto_20210423_0321"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='wager',
-            name='sender_side',
+            model_name="wager",
+            name="sender_side",
         ),
         migrations.RemoveField(
-            model_name='wager',
-            name='team',
+            model_name="wager",
+            name="team",
         ),
         migrations.RemoveField(
-            model_name='wager',
-            name='wager_type',
+            model_name="wager",
+            name="wager_type",
         ),
         migrations.AddField(
-            model_name='wager',
-            name='outcome',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='wewager.gameoutcome'),
+            model_name="wager",
+            name="outcome",
+            field=models.ForeignKey(
+                default=0,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="wewager.gameoutcome",
+            ),
             preserve_default=False,
         ),
     ]

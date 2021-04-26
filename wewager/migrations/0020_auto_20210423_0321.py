@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0019_gameoutcome_external_uid'),
+        ("wewager", "0019_gameoutcome_external_uid"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='game',
-            name='external_uid',
+            model_name="game",
+            name="external_uid",
             field=models.CharField(max_length=64, unique=True),
         ),
         migrations.AlterField(
-            model_name='gameoutcome',
-            name='external_uid',
+            model_name="gameoutcome",
+            name="external_uid",
             field=models.CharField(max_length=64, unique=True),
         ),
     ]

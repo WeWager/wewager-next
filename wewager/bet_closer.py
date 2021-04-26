@@ -5,12 +5,13 @@ from wewager.models import Game, GameOutcome, Wager, WagerState
 
 resolvers = {}
 
-class BetCloser:
 
+class BetCloser:
     @staticmethod
     def resolver(bet_type: str):
         def inner(func):
             resolvers[bet_type] = func
+
         return inner
 
     @staticmethod
@@ -30,12 +31,14 @@ class BetCloser:
                 wager.complete(outcome.hit)
                 wager.save()
 
+
 @BetCloser.resolver("Moneyline")
 def moneyline(outcome: GameOutcome, game: Game):
     data = game.data
     winner = max(data["participants"], key=lambda x: x["score"])
     hit = winner["name"] in outcome.description
     outcome.hit = hit
+
 
 @BetCloser.resolver("Total Runs")
 @BetCloser.resolver("Total Points")

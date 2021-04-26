@@ -20,8 +20,8 @@ class EplSpider(Spider):
                 "description": f"{away_name} vs {home_name}",
                 "participants": [
                     {"name": home_name, "score": int(game["teams"][0].get("score", 0))},
-                    {"name": away_name, "score": int(game["teams"][1].get("score", 0))}
+                    {"name": away_name, "score": int(game["teams"][1].get("score", 0))},
                 ],
                 "status": game.get("clock", {}).get("label", ""),
-                "ended": game["status"] == "C"
+                "ended": game["status"] == "C",
             }

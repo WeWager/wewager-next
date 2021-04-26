@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0014_teamdata_end_position'),
+        ("wewager", "0014_teamdata_end_position"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='team',
-            name='teamUid',
+            model_name="team",
+            name="teamUid",
             field=models.CharField(max_length=7, null=True),
         ),
         migrations.AlterField(
-            model_name='teamdata',
-            name='moneyline',
+            model_name="teamdata",
+            name="moneyline",
             field=models.IntegerField(null=True),
         ),
         migrations.AlterField(
-            model_name='teamdata',
-            name='spread',
+            model_name="teamdata",
+            name="spread",
             field=models.DecimalField(decimal_places=1, max_digits=3, null=True),
         ),
     ]

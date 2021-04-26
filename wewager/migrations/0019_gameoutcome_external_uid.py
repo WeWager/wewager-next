@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0018_auto_20210423_0257'),
+        ("wewager", "0018_auto_20210423_0257"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='gameoutcome',
-            name='external_uid',
-            field=models.CharField(default='', max_length=64),
+            model_name="gameoutcome",
+            name="external_uid",
+            field=models.CharField(default="", max_length=64),
             preserve_default=False,
         ),
     ]

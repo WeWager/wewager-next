@@ -9,22 +9,26 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('social', '0002_follow'),
+        ("social", "0002_follow"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='post',
-            name='replies',
+            model_name="post",
+            name="replies",
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_comments', to=settings.AUTH_USER_MODEL),
+            model_name="comment",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="user_comments",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='liked_by',
+            model_name="post",
+            name="liked_by",
             field=models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL),
         ),
     ]

@@ -26,9 +26,9 @@ class GamePipeline:
             utc_dt = UTC.localize(dt)
             game, g_created = Game.objects.get_or_create(
                 description=item["description"],
-                date=utc_dt, 
+                date=utc_dt,
                 external_uid=item["gameUID"],
-                league=self.shorten(item["league"])
+                league=self.shorten(item["league"]),
             )
 
             outcome_dt = datetime.fromisoformat(item["startDate"][:-1])
@@ -37,7 +37,7 @@ class GamePipeline:
                 description=item["betName"],
                 bet_type=item["betType"],
                 bet_price=item["betPrice"],
-                update_dt=UTC.localize(outcome_dt)
+                update_dt=UTC.localize(outcome_dt),
             )
             if o_created:
                 game.outcomes.add(outcome)

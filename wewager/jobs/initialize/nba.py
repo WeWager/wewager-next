@@ -5,7 +5,6 @@ from wewager.models import Team
 
 
 class NBATeams:
-
     def run():
         resp = requests.get("https://www.balldontlie.io/api/v1/teams")
         data = json.loads(resp.text)
@@ -14,9 +13,10 @@ class NBATeams:
                 city=team["city"],
                 name=team["name"],
                 abbr=team["abbreviation"],
-                league="NBA"
+                league="NBA",
             )
             obj.save()
+
 
 if __name__ == "__main__":
     NBATeams.run()

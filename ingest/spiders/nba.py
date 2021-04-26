@@ -38,6 +38,7 @@ class NbaSpider(Spider):
                 "ended": game["gameStatusText"].strip() == "Final",
             }
 
+
 """
 class NbaBoxScoreSpider(Spider):
     name = "nba_boxscore"

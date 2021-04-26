@@ -12,7 +12,7 @@ class DataFeedsSpider(Spider):
         f"https://draftkings.datafeeds.net/api/json/odds/v3/900/draftkings/basketball/nba/all?api-key={KEY}",
         f"https://draftkings.datafeeds.net/api/json/odds/v3/900/draftkings/baseball/mlb/all?api-key={KEY}",
         f"https://caesars.datafeeds.net/api/json/odds/v3/60/caesars/hockey/nhl/moneyline?api-key={KEY}",
-        f"https://bookmaker.datafeeds.net/api/json/odds/v3/60/bookmaker/soccer/england-premier-league/moneyline?api-key={KEY}"
+        f"https://bookmaker.datafeeds.net/api/json/odds/v3/60/bookmaker/soccer/england-premier-league/moneyline?api-key={KEY}",
     ]
 
     def parse(self, response):
