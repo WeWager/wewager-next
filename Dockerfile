@@ -1,18 +1,5 @@
-FROM python:3.8.9-slim-buster
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends \
-  gcc \
-  gettext \
-  libc-dev \
-  libffi-dev \
-  libxslt-dev \
-  libxml2-dev \
-  musl-dev \
-  openjpeg-dev \
-  openssl-dev \
-  postgresql-client \
-  python3-dev \
-  python3-lxml 
+# pull official base image
+FROM python:3.8.3-slim-buster
 
 # set work directory
 WORKDIR /usr/src/app
@@ -20,7 +7,7 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 # install dependencies
 RUN pip install --upgrade pip
