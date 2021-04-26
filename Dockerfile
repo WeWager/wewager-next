@@ -1,6 +1,6 @@
 FROM python:3.8.9-slim-buster
-RUN apt-get update && apt-get upgrade
-RUN apt-get install \
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends \
   build-base \
   cairo \
   cairo-dev \
