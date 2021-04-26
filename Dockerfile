@@ -1,8 +1,6 @@
-FROM python:3.8.0-alpine
-RUN apk update && apk upgrade
-RUN apk add --no-cache jpeg-dev zlib-dev gcc libxslt-dev libc-dev
-RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev postgresql-dev
-RUN apk add --update \
+FROM python:3.8.9-slim-buster
+RUN apt-get update && apt-get upgrade
+RUN apt-get install \
   build-base \
   cairo \
   cairo-dev \
@@ -13,7 +11,11 @@ RUN apk add --update \
   gettext \
   jpeg-dev \
   lcms2-dev \
+  libc-dev \
   libffi-dev \
+  libxslt-dev \
+  libxml-2 \
+  libxml2-dev \
   musl-dev \
   openjpeg-dev \
   openssl-dev \
@@ -23,6 +25,7 @@ RUN apk add --update \
   postgresql-dev \
   py-cffi \
   python3-dev \
+  python3-lxml \
   rust \
   tcl-dev \
   tiff-dev \

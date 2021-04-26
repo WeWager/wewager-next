@@ -1,6 +1,6 @@
 import json
 from scrapy import Spider, Request
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from wewager.models import Game
 
@@ -11,9 +11,10 @@ class MlbSpider(Spider):
     def start_requests(self):
         yield Request("https://bdfed.stitch.mlbinfra.com/bdfed/transform-mlb-scoreboard?stitch_env=prod&sortTemplate=4&sportId=1&startDate=2021-04-24&endDate=2021-04-24&gameType=E&&gameType=S&&gameType=R&&gameType=F&&gameType=D&&gameType=L&&gameType=W&&gameType=A&language=en&leagueId=104&&leagueId=103&contextTeamId=")
 
-        dt = datetime.today()
-        date = dt.strftime("%Y-%m-%d")
-        yield Request(f"https://statsapi.web.nhl.com/api/v1/schedule?startDate={date}&endDate={date}&hydrate=team(leaders(categories=[points,goals,assists],gameTypes=[R])),linescore,broadcasts(all),tickets,game(content(media(epg),highlights(scoreboard)),seriesSummary),radioBroadcasts,metadata,decisions,scoringplays,seriesSummary(series)&site=en_nhl&teamId=&gameType=&timecode=")
+        bdt = datetime.today()
+        edt = bdt - timedelta(days=1)
+        begin, end = bdt.strftime("%Y-%m-%d"), edt.strftime("%Y-%m-%d")
+        yield Request(f"https://statsapi.web.nhl.com/api/v1/schedule?startDate={begin}&endDate={end}&hydrate=team(leaders(categories=[points,goals,assists],gameTypes=[R])),linescore,broadcasts(all),tickets,game(content(media(epg),highlights(scoreboard)),seriesSummary),radioBroadcasts,metadata,decisions,scoringplays,seriesSummary(series)&site=en_nhl&teamId=&gameType=&timecode=")
 
     def parse(self, response):
         data = json.loads(response.body)
