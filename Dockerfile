@@ -1,36 +1,18 @@
 FROM python:3.8.9-slim-buster
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
-  build-base \
-  cairo \
-  cairo-dev \
-  cargo \
-  freetype-dev \
   gcc \
-  gdk-pixbuf-dev \
   gettext \
-  jpeg-dev \
-  lcms2-dev \
   libc-dev \
   libffi-dev \
   libxslt-dev \
-  libxml-2 \
   libxml2-dev \
   musl-dev \
   openjpeg-dev \
   openssl-dev \
-  pango-dev \
-  poppler-utils \
   postgresql-client \
-  postgresql-dev \
-  py-cffi \
   python3-dev \
   python3-lxml \
-  rust \
-  tcl-dev \
-  tiff-dev \
-  tk-dev \
-  zlib-dev
 
 # set work directory
 WORKDIR /usr/src/app
