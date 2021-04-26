@@ -38,7 +38,7 @@ class NbaSpider(Spider):
                 "ended": game["gameStatusText"].strip() == "Final",
             }
 
-
+"""
 class NbaBoxScoreSpider(Spider):
     name = "nba_boxscore"
 
@@ -54,3 +54,4 @@ class NbaBoxScoreSpider(Spider):
     def parse(self, response):
         yield json.loads(response.body)
 
+"""
