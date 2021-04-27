@@ -17,7 +17,7 @@ class Game(models.Model):
 
     @property
     def winner(self):
-        if self.data is not None:
+        if self.ended and self.data is not None:
             teams = self.data.get("participants")
             if teams:
                 return max(teams, key=lambda x: x["score"])["name"]
