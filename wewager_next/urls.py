@@ -23,7 +23,9 @@ from drf_yasg import openapi
 
 admin.site.site_header = "WeWager Admin"
 admin.site.site_title = "WeWager Admin Panel"
-admin.site.index_title = '"You miss 100% of the shots you don\'t take" -Wayne Gretzky -Michael Scott'
+admin.site.index_title = (
+    '"You miss 100% of the shots you don\'t take" -Wayne Gretzky -Michael Scott'
+)
 
 
 schema_view = get_schema_view(
