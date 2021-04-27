@@ -35,7 +35,7 @@ class NbaSpider(Spider):
                     {"name": away_name, "score": game["awayTeam"]["score"]},
                 ],
                 "status": game["gameStatusText"].strip(),
-                "ended": game["gameStatusText"].strip() == "Final",
+                "ended": game["gameStatusText"].strip() in ["Final", "Final/OT"],
             }
 
 
