@@ -48,8 +48,9 @@ class ScorePipeline:
     def process_item(self, item, spider):
         if item.pop("__TYPE__", None) in ["nba", "mlb", "epl"]:
             print("ended:", item["ended"])
+            print("desc:", item["description"])
             # TODO: Account for different games w/ same teams in this query
-            game = Game.objects.filter(description=item.pop("description")).first()
+            game = Game.objects.filter(description=item.pop("description")).order_by("-date").first()
             if game:
                 game.data = item
                 game.ended = item.pop("ended")
