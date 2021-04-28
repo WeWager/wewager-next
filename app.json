@@ -5,7 +5,7 @@
             "schedule": "*/15 * * * *"
         },
         {
-            "command": "sh /usr/src/app/scripts/run_sports_scraper.sh",
+            "command": "sh /usr/src/app/scripts/run_sports_scrapers.sh",
             "schedule": "*/1 * * * *"
         }
     ]
