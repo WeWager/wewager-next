@@ -1,4 +1,5 @@
 import json
+import dateutil.parser
 from scrapy import Spider, Request
 
 
@@ -14,10 +15,12 @@ class EplSpider(Spider):
         for game in data["content"]:
             home_name = game["teams"][0]["team"]["name"]
             away_name = game["teams"][1]["team"]["name"]
+            date = dateutil.parser.parse(game["provisionalKickoff"]["label"])
             yield {
                 "__TYPE__": self.name,
                 "epl_id": int(game["id"]),
                 "description": f"{away_name} vs {home_name}",
+                "date": date.date(),
                 "participants": [
                     {"name": home_name, "score": int(game["teams"][0].get("score", 0))},
                     {"name": away_name, "score": int(game["teams"][1].get("score", 0))},
