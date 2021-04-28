@@ -6,7 +6,7 @@
         },
         {
             "command": "./scripts/run_sports_scraper.sh",
-            "schedule": "*/5 * * * *"
+            "schedule": "*/1 * * * *"
         }
     ]
 }
