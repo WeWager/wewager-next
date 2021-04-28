@@ -1,11 +1,11 @@
 {
     "cron": [
         {
-            "command": "/usr/src/app/scripts/run_datafeeds_scraper.sh",
+            "command": "sh /usr/src/app/scripts/run_datafeeds_scraper.sh",
             "schedule": "*/15 * * * *"
         },
         {
-            "command": "/usr/src/app/scripts/run_sports_scraper.sh",
+            "command": "sh /usr/src/app/scripts/run_sports_scraper.sh",
             "schedule": "*/1 * * * *"
         }
     ]
