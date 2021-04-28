@@ -20,7 +20,7 @@ class EplSpider(Spider):
                 "__TYPE__": self.name,
                 "epl_id": int(game["id"]),
                 "description": f"{away_name} vs {home_name}",
-                "date": date.date(),
+                "date": date.date().strftime("%Y-%m-%d"),
                 "participants": [
                     {"name": home_name, "score": int(game["teams"][0].get("score", 0))},
                     {"name": away_name, "score": int(game["teams"][1].get("score", 0))},

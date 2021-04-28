@@ -29,7 +29,7 @@ class MlbSpider(Spider):
             yield {
                 "__TYPE__": self.name,
                 "mlb_id": game["gamePk"],
-                "date": dateutil.parser.parse(data["dates"][0]["date"]).date(),
+                "date": data["dates"][0]["date"],
                 "description": f"{away_name} vs {home_name}",
                 "participants": [
                     {"name": home_name, "score": game["teams"]["home"].get("score", 0)},

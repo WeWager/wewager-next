@@ -31,7 +31,7 @@ class NbaSpider(Spider):
                 "__TYPE__": self.name,
                 "nba_id": game["gameId"],
                 "description": description,
-                "date": dateutil.parser.parse(data["scoreboard"]["gameDate"]).parse(),
+                "date": data["scoreboard"]["gameDate"],
                 "participants": [
                     {"name": home_name, "score": game["homeTeam"]["score"]},
                     {"name": away_name, "score": game["awayTeam"]["score"]},

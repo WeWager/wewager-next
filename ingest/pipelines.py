@@ -1,5 +1,6 @@
 import pytz
 from datetime import datetime
+import dateutil.parser
 from itemadapter import ItemAdapter
 
 from wewager.models import Game, Team, GameOutcome
@@ -47,9 +48,10 @@ class GamePipeline:
 class ScorePipeline:
     def process_item(self, item, spider):
         if item.pop("__TYPE__", None) in ["nba", "mlb", "epl"]:
+            date = dateutil.parser.parse(item.pop("date")).date()
             game = (
                 Game.objects.filter(description=item.pop("description"))
-                .filter(date_eastern__date=item["date"])
+                .filter(date_eastern__date=date)
                 .first()
             )
             if game:
