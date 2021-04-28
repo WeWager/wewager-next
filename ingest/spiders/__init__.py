@@ -4,3 +4,5 @@
 # your spiders.
 from .datafeeds import DataFeedsSpider
 from .nba import NbaSpider
+from .mlb import MlbSpider
+from .epl import EplSpider
