@@ -15,6 +15,9 @@ class Game(models.Model):
     ended = models.BooleanField(default=False)
     outcomes = models.ManyToManyField("GameOutcome")
 
+    class Meta:
+        ordering = ("date",)
+
     @property
     def winner(self):
         if self.ended and self.data is not None:
@@ -26,6 +29,12 @@ class Game(models.Model):
     @property
     def time_eastern(self):
         return self.date - timedelta(hours=5)
+
+    @property
+    def status(self):
+        if self.data:
+            return self.data.get("status", None)
+        return None
 
     @property
     def teams(self):

@@ -12,7 +12,7 @@ admin.site.register(GameOutcome)
 
 class GameAdmin(admin.ModelAdmin):
     date_hierarchy = "date_eastern"
-    list_display = ("description", "league", "date_eastern", "winner")
+    list_display = ("description", "league", "date_eastern", "status", "winner")
     readonly_fields = ("date_eastern",)
     fields = (
         "description",
