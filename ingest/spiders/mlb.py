@@ -36,5 +36,5 @@ class MlbSpider(Spider):
                     {"name": away_name, "score": game["teams"]["away"].get("score", 0)},
                 ],
                 "status": game["status"]["detailedState"],
-                "ended": game["status"]["detailedState"] == "Final",
+                "ended": game["status"]["detailedState"] in ["Final", "Game Over"],
             }
