@@ -23,18 +23,19 @@ class MlbSpider(Spider):
 
     def parse(self, response):
         data = json.loads(response.body)
-        for game in data["dates"][0]["games"]:
-            home_name = game["teams"]["home"]["team"]["name"]
-            away_name = game["teams"]["away"]["team"]["name"]
-            yield {
-                "__TYPE__": self.name,
-                "mlb_id": game["gamePk"],
-                "date": data["dates"][0]["date"],
-                "description": f"{away_name} vs {home_name}",
-                "participants": [
-                    {"name": home_name, "score": game["teams"]["home"].get("score", 0)},
-                    {"name": away_name, "score": game["teams"]["away"].get("score", 0)},
-                ],
-                "status": game["status"]["detailedState"],
-                "ended": game["status"]["detailedState"] in ["Final", "Game Over"],
-            }
+        for date in data["dates"]:
+            for game in date["games"]:
+                home_name = game["teams"]["home"]["team"]["name"]
+                away_name = game["teams"]["away"]["team"]["name"]
+                yield {
+                    "__TYPE__": self.name,
+                    "mlb_id": game["gamePk"],
+                    "date": date["date"],
+                    "description": f"{away_name} vs {home_name}",
+                    "participants": [
+                        {"name": home_name, "score": game["teams"]["home"].get("score", 0)},
+                        {"name": away_name, "score": game["teams"]["away"].get("score", 0)},
+                    ],
+                    "status": game["status"]["detailedState"],
+                    "ended": game["status"]["detailedState"] in ["Final", "Game Over"],
+                }
