@@ -28,7 +28,7 @@ class Game(models.Model):
 
     @property
     def time_eastern(self):
-        return self.date - timedelta(hours=5)
+        return self.date - timedelta(hours=4)
 
     @property
     def status(self):
