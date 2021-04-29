@@ -8,7 +8,6 @@ from rest_framework.exceptions import ParseError
 
 from wewager.exceptions import BalanceTooLow
 from wewager.models.game import Game
-from wewager.models.team_data import TeamData
 from wewager.models.transaction import TransactionType
 from wewager.models.wallet import Wallet
 

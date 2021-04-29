@@ -3,7 +3,7 @@ from datetime import datetime
 import dateutil.parser
 from itemadapter import ItemAdapter
 
-from wewager.models import Game, Team, GameOutcome
+from wewager.models import Game, GameOutcome
 
 
 UTC = pytz.timezone("UTC")
