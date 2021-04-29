@@ -16,7 +16,8 @@ class IngestPipeline:
 
 class GamePipeline:
     def shorten(self, name):
-        aliases = {"England - Premier League": "EPL"}
+        aliases = {"England - Premier League": "EPL",
+                   "New Jersey Islanders": "New York Islanders"}
         if name in aliases:
             return aliases[name]
         return name
