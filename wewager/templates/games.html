@@ -3,17 +3,17 @@
 {% block view %}
 <div class="container">
     <h2>Games</h2>
-    <ul>
+    <div class="pure-g">
         {% for game in games %}
-        <li>Game #{{ game.gameUid }} on {{ game.date }}</li>
-        <ul>
-            {% for team in game.team_data %}
-            <li style="margin-bottom: 10px;">{{ team.team }} 
-                <button class="pure-button pure-button-primary">({{ team.spread }})</button>
-                <button class="pure-button pure-button-primary">{{ team.moneyline }}</button></li>
-            {% endfor %}
-        </ul>
+            <div class="pure-u-1-3">
+                <p><span style="font-weight: bolder;">{{ game.league }}</span> {{ game.description }}</p>
+                {% if game.ended %}<p><b>Ended</b></p>{% endif %}
+                <p>Time: {{ game.date_eastern }}</p>
+                {% for team in game.data.participants %}
+                    <p>{{team.name}} {{team.score}}</p>
+                {% endfor %}
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 </div>
 {% endblock view %}

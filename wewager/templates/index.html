@@ -19,6 +19,9 @@
             hx-push-url="true">
             Wagers</a>
         </li>
+        <li class="pure-menu-item">
+            {{ request.user.username }}
+        </li>
         <li class="pure-menu-item" onclick="emit('updateBal')">
             <p hx-get="/partial/balance/"
             hx-trigger="updateBal">

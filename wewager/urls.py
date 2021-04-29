@@ -27,8 +27,8 @@ web_urlpatterns = [
 partial_urlpatterns = [path("balance/", wewager.views.balance_view, name="balance")]
 
 urlpatterns = [
-    path("", include(v1_urlpatterns)),
-    path("web/", include(web_urlpatterns)),
+    path("api/v1/", include(v1_urlpatterns)),
+    path("", include(web_urlpatterns)),
     path("partial/", include(partial_urlpatterns)),
     path("accounts/", include("django.contrib.auth.urls")),
 ]

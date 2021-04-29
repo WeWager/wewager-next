@@ -43,7 +43,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/social/", include("social.urls")),
-    path("api/v1/", include("wewager.urls")),
+    path("", include("wewager.urls")),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),
