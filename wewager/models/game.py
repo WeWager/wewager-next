@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.apps import apps
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -35,6 +35,10 @@ class Game(models.Model):
         if self.data:
             return self.data.get("status", None)
         return None
+
+    @property
+    def started(self):
+        return self.date_eastern > datetime.today()
 
     def __str__(self):
         return f"[{self.league}] {self.description} {self.date}"
