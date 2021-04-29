@@ -9,6 +9,9 @@ from wewager.models import Game
 class MlbSpider(Spider):
     name = "mlb"
 
+    def expand(self, name):
+        return name.replace("NY ", "New York ")
+
     def start_requests(self):
         bdt = datetime.today()
         edt = bdt - timedelta(days=1)
@@ -33,8 +36,8 @@ class MlbSpider(Spider):
                     "date": date["date"],
                     "description": f"{away_name} vs {home_name}",
                     "participants": [
-                        {"name": home_name, "score": game["teams"]["home"].get("score", 0)},
-                        {"name": away_name, "score": game["teams"]["away"].get("score", 0)},
+                        {"name": self.expand(home_name), "score": game["teams"]["home"].get("score", 0)},
+                        {"name": self.expand(away_name), "score": game["teams"]["away"].get("score", 0)},
                     ],
                     "status": game["status"]["detailedState"],
                     "ended": game["status"]["detailedState"] in ["Final", "Game Over"],
