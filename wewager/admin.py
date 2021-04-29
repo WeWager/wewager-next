@@ -1,7 +1,6 @@
 from django.contrib import admin
 from wewager.models import *
 
-admin.site.register(Avatar)
 admin.site.register(Wallet)
 admin.site.register(Transaction)
 admin.site.register(Wager)

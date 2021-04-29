@@ -1,4 +1,3 @@
-from .avatar import Avatar
 from .game import Game
 from .transaction import Transaction, TransactionType
 from .wager import Wager, WagerSide, WagerState, WagerType
