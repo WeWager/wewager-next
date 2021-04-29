@@ -28,16 +28,16 @@ class MlbSpider(Spider):
         data = json.loads(response.body)
         for date in data["dates"]:
             for game in date["games"]:
-                home_name = game["teams"]["home"]["team"]["name"]
-                away_name = game["teams"]["away"]["team"]["name"]
+                home_name = self.expand(game["teams"]["home"]["team"]["name"])
+                away_name = self.expand(game["teams"]["away"]["team"]["name"])
                 yield {
                     "__TYPE__": self.name,
                     "mlb_id": game["gamePk"],
                     "date": date["date"],
                     "description": f"{away_name} vs {home_name}",
                     "participants": [
-                        {"name": self.expand(home_name), "score": game["teams"]["home"].get("score", 0)},
-                        {"name": self.expand(away_name), "score": game["teams"]["away"].get("score", 0)},
+                        {"name": home_name, "score": game["teams"]["home"].get("score", 0)},
+                        {"name": away_name, "score": game["teams"]["away"].get("score", 0)},
                     ],
                     "status": game["status"]["detailedState"],
                     "ended": game["status"]["detailedState"] in ["Final", "Game Over"],
