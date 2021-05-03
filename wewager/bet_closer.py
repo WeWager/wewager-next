@@ -79,4 +79,4 @@ def point_spread(outcome: GameOutcome, game: Game):
     matching_team["score"] += line
 
     winner = max((matching_team, other_team), key=lambda x: x["score"])
-    hit = winner == matching_team
+    outcome.hit = winner == matching_team
