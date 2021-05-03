@@ -52,7 +52,8 @@ class ScorePipeline:
             date = dateutil.parser.parse(item.pop("date")).date()
             game = (
                 Game.objects.filter(description=item.pop("description"))
-                .filter(date_eastern__date=date)
+                .order_by("date")
+                .filter(date_eastern__date=date, ended=False)
                 .first()
             )
             if game:
