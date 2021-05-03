@@ -1,7 +1,11 @@
+import re
+import logging
 from typing import Mapping, Callable
 
 from wewager.models import Game, GameOutcome, Wager, WagerState
 
+
+logger = logging.Logger(__name__)
 
 resolvers = {}
 
@@ -16,16 +20,24 @@ class BetCloser:
 
     @staticmethod
     def resolve_bet(outcome: GameOutcome, game: Game):
-        handler = resolvers.get(outcome.bet_type, None)
-        if handler:
-            handler(outcome, game)
-            outcome.save()
+        print(f"Finding resolver for {outcome.bet_type}")
+        for resolver in resolvers:
+            print(f"Trying resolver: {resolver}")
+            if re.match(resolver, outcome.bet_type):
+                logger.debug(f"Resolver {resolver} matched.")
+                handler(outcome, game)
+                outcome.save()
+                return
+            print(f"ERROR: No resolver matched {outcome.bet_type}")
 
     @staticmethod
     def resolve_game(game: Game):
         for outcome in game.outcomes.all():
+            print(f"Resolving {outcome.description}...")
             if outcome.hit is None:
                 BetCloser.resolve_bet(outcome, game)
+            else:
+                print(f"Outcome already calcualted: {outcome.hit}")
             wagers = Wager.objects.filter(outcome=outcome, status=WagerState.ACCEPTED)
             for wager in wagers:
                 wager.complete(outcome.hit)
@@ -40,8 +52,7 @@ def moneyline(outcome: GameOutcome, game: Game):
     outcome.hit = hit
 
 
-@BetCloser.resolver("Total Runs")
-@BetCloser.resolver("Total Points")
+@BetCloser.resolver("Total (Points|Runs)")
 def total_points(outcome: GameOutcome, game: Game):
     data = game.data
     total = sum([x["score"] for x in data["participants"]])
