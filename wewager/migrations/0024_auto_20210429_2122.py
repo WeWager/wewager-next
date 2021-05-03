@@ -6,22 +6,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0023_auto_20210428_0314'),
+        ("wewager", "0023_auto_20210428_0314"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='teamdata',
-            name='game',
+            model_name="teamdata",
+            name="game",
         ),
         migrations.RemoveField(
-            model_name='teamdata',
-            name='team',
+            model_name="teamdata",
+            name="team",
         ),
         migrations.DeleteModel(
-            name='Team',
+            name="Team",
         ),
         migrations.DeleteModel(
-            name='TeamData',
+            name="TeamData",
         ),
     ]

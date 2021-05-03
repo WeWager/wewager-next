@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0022_game_date_eastern'),
+        ("wewager", "0022_game_date_eastern"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='game',
-            options={'ordering': ('date',)},
+            name="game",
+            options={"ordering": ("date",)},
         ),
     ]
