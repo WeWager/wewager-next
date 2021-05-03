@@ -28,7 +28,7 @@ def execute_cmd(cmd, job_name):
 
 
 def run():
-    
+
     scheduler = BlockingScheduler()
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
@@ -37,24 +37,22 @@ def run():
         execute_cmd,
         args=[cmd, "fetch_sports"],
         trigger=CronTrigger(second="*/30"),
-        id="fetch_sports",  
+        id="fetch_sports",
         max_instances=1,
         next_run_time=datetime.now(),
         replace_existing=True,
     )
     logger.info("Added job 'fetch_sports'.")
 
-    
     scheduler.add_job(
         execute_cmd,
         args=["scrapy crawl datafeeds", "fetch_odds"],
         trigger=CronTrigger(minute="*/15"),
-        id="fetch_odds",  
+        id="fetch_odds",
         max_instances=1,
         replace_existing=True,
     )
     logger.info("Added job 'fetch_odds'.")
-
 
     scheduler.add_job(
         delete_old_job_executions,
@@ -65,10 +63,7 @@ def run():
         max_instances=1,
         replace_existing=True,
     )
-    logger.info(
-        "Added weekly job: 'delete_old_job_executions'."
-    )
-    
+    logger.info("Added weekly job: 'delete_old_job_executions'.")
 
     try:
         logger.info("Starting scheduler...")
