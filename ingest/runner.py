@@ -1,8 +1,7 @@
 import logging
 import subprocess
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from apscheduler.schedulers.twisted import TwistedScheduler
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler.jobstores import DjangoJobStore
@@ -32,18 +31,6 @@ def run():
     scheduler = BlockingScheduler()
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
-    cmd = "scrapy list | grep -v datafeeds | xargs -n 1 scrapy crawl"
-    scheduler.add_job(
-        execute_cmd,
-        args=[cmd, "fetch_sports"],
-        trigger=CronTrigger(second="*/30"),
-        id="fetch_sports",
-        max_instances=1,
-        next_run_time=datetime.now(),
-        replace_existing=True,
-    )
-    logger.info("Added job 'fetch_sports'.")
-
     scheduler.add_job(
         execute_cmd,
         args=["scrapy crawl datafeeds", "fetch_odds"],
@@ -51,8 +38,21 @@ def run():
         id="fetch_odds",
         max_instances=1,
         replace_existing=True,
+        next_run_time=datetime.now()
     )
     logger.info("Added job 'fetch_odds'.")
+
+    cmd = "scrapy list | grep -v datafeeds | xargs -n 1 scrapy crawl"
+    scheduler.add_job(
+        execute_cmd,
+        args=[cmd, "fetch_sports"],
+        trigger=CronTrigger(second="*/30"),
+        id="fetch_sports",
+        max_instances=1,
+        next_run_time=datetime.now() + timedelta(seconds=10),
+        replace_existing=True,
+    )
+    logger.info("Added job 'fetch_sports'.")
 
     scheduler.add_job(
         delete_old_job_executions,
