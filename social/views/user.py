@@ -11,5 +11,5 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     Read-only viewset for users
     """
 
-    queryset = get_user_model().objects.all()
+    queryset = get_user_model().objects.all().order_by("id")
     serializer_class = UserSerializer
