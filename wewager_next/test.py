@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "djmoney",
     "rest_framework",
     "rest_framework.authtoken",
-    "django_filters"
+    "django_filters",
 ]
 
 MIDDLEWARE = [
