@@ -27,7 +27,7 @@ class BetCloser:
                 handler(outcome, game)
                 outcome.save()
                 return
-            logger.error(f"ERROR: No resolver matched {outcome.bet_type}")
+        logger.error(f"ERROR: No resolver matched {outcome.bet_type}")
 
     @staticmethod
     def resolve_game(game: Game):
