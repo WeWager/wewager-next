@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema, no_body
+import django_filters.rest_framework as filters
 
 from wewager.models import Wager
 from wewager.serializers import WagerSerializer, WagerCreateSerializer, EmptySerializer
@@ -12,19 +13,19 @@ from common.viewsets import CreateListRetrieveViewSet
 
 class WagerViewSet(ReadWriteSerializerMixin, CreateListRetrieveViewSet):
     """
-    /wager
-    /wager/:id
     List, create, and retrieve your wagers
     """
 
     read_serializer_class = WagerSerializer
     write_serializer_class = WagerCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = ("game", "recipient", "status", "amount")
 
     def get_queryset(self):
         return Wager.objects.filter(sender=self.request.user) | Wager.objects.filter(
             recipient=self.request.user
-        )
+        ).order_by("status")
 
     def get_serializer_context(self):
         return {"user": self.request.user}

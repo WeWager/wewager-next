@@ -4,22 +4,26 @@ from rest_framework import serializers
 from rest_framework.exceptions import ParseError
 
 from wewager.models import Wager
+from social.serializers import UserSerializer
+from wewager.serializers.game_outcome import GameOutcomeSerializer
 
 
 class WagerSerializer(serializers.ModelSerializer):
     opponent = serializers.SerializerMethodField()
     is_sender = serializers.SerializerMethodField()
+    game_desc = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     amount = MoneyField(max_digits=10, decimal_places=2)
     recipient_amount = MoneyField(max_digits=10, decimal_places=2)
+    outcome = GameOutcomeSerializer()
 
     class Meta:
         model = Wager
         fields = (
             "id",
             "game",
+            "game_desc",
             "outcome",
-            "sender",
             "opponent",
             "is_sender",
             "recipient_amount",
@@ -33,13 +37,16 @@ class WagerSerializer(serializers.ModelSerializer):
             if wager.sender == self.context.get("user", None)
             else wager.recipient
         )
-        return opp.id
+        return UserSerializer(opp).data
 
     def get_is_sender(self, wager):
         return wager.sender == self.context.get("user")
 
     def get_status(self, wager):
         return wager.status.split(".")[-1]
+
+    def get_game_desc(self, wager):
+        return wager.game.description
 
 
 class WagerCreateSerializer(serializers.ModelSerializer):
