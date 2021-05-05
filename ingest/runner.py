@@ -38,7 +38,7 @@ def run():
         id="fetch_odds",
         max_instances=1,
         replace_existing=True,
-        next_run_time=datetime.now(),
+        next_run_time=datetime.now()
     )
     logger.info("Added job 'fetch_odds'.")
 

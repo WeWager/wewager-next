@@ -13,19 +13,15 @@ from common.permissions import IsOwnerOrReadOnly, CanReactToPost
 class PostViewSet(ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, (IsOwnerOrReadOnly | CanReactToPost)]
-
+    
     def get_queryset(self):
         user = self.request.user
         liked = Post.objects.filter(id=OuterRef("id"), liked_by=user)
-        return (
-            Post.objects.all()
-            .annotate(
+        return Post.objects.all().annotate(
                 like_count=Count("liked_by"),
                 reply_count=Count("comments"),
                 liked=Exists(liked),
-            )
-            .order_by("-date")
-        )
+            ).order_by("-date")
 
     def action_response(self, post):
         serializer = self.serializer_class(post)
