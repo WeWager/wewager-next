@@ -10,14 +10,11 @@ from wewager.serializers import GameSerializer
 
 class GameFilter(filters.FilterSet):
     since = filters.DateTimeFilter(field_name="date", lookup_expr="gte")
-    on = filters.DateTimeFilter(field_name="date", method="get_games_on_date", label="On date")
-
-    ordering = filters.OrderingFilter(
-        fields=(
-            ("date", "date"),
-            ("league", "league")
-        )
+    on = filters.DateTimeFilter(
+        field_name="date", method="get_games_on_date", label="On date"
     )
+
+    ordering = filters.OrderingFilter(fields=(("date", "date"), ("league", "league")))
 
     def get_games_on_date(self, queryset, field_name, value):
         return queryset.filter(date__date=value.date())
