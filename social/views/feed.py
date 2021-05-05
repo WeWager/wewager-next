@@ -3,11 +3,11 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Count, Q, OuterRef, Exists
 
 from social.models import Post
-from .post_mixin import PostMixins
 from social.serializers import PostSerializer
+from common.permissions import IsOwnerOrReadOnly
 
 
-class FeedViewSet(viewsets.ModelViewSet, PostMixins):
+class FeedViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
 
