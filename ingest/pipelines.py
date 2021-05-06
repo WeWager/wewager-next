@@ -56,7 +56,7 @@ class GamePipeline:
     def close_spider(self):
         for game in self.gathered_outcomes.keys():
             outcomes = self.gathered_outcomes[game]
-            game.outcomes.filter(outcomes=outcomes).update(is_latest=False)
+            game.outcomes.all().exclude(outcomes=outcomes).update(is_latest=False)
 
 
 class ScorePipeline:
