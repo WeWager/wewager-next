@@ -1,7 +1,6 @@
 from datetime import timedelta, datetime
-from django.apps import apps
 from django.db import models
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 
@@ -17,6 +16,10 @@ class Game(models.Model):
 
     class Meta:
         ordering = ("date",)
+
+    @property
+    def bets(self):
+        return self.outcomes.filter(is_latest=True)
 
     @property
     def winner(self):

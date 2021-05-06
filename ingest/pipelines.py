@@ -1,7 +1,8 @@
 import pytz
 from datetime import datetime
 import dateutil.parser
-from itemadapter import ItemAdapter
+from typing import Mapping
+from collections import defaultdict
 
 from wewager.models import Game, GameOutcome
 
@@ -15,6 +16,11 @@ class IngestPipeline:
 
 
 class GamePipeline:
+    gathered_outcomes: Mapping
+
+    def open_spider(self, spider):
+        self.gathered_outcomes = defaultdict(list)
+
     def shorten(self, name):
         aliases = {
             "England - Premier League": "EPL",
@@ -43,9 +49,14 @@ class GamePipeline:
                 bet_price=item["betPrice"],
                 update_dt=UTC.localize(outcome_dt),
             )
-            if o_created:
-                game.outcomes.add(outcome)
+            game.outcomes.add(outcome)
+            self.gathered_outcomes[game].append(outcome)
         return item
+
+    def close_spider(self):
+        for game in self.gathered_outcomes.keys():
+            outcomes = self.gathered_outcomes[game]
+            game.outcomes.filter(outcomes=outcomes).update(is_latest=False)
 
 
 class ScorePipeline:

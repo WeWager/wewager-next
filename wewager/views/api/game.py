@@ -1,6 +1,3 @@
-from datetime import datetime
-
-import pytz
 from rest_framework import viewsets
 import django_filters.rest_framework as filters
 
