@@ -1,10 +1,14 @@
 import pytz
+import logging
 from datetime import datetime
 import dateutil.parser
 from typing import Mapping
 from collections import defaultdict
 
 from wewager.models import Game, GameOutcome
+
+
+logger = logging.Logger(__name__)
 
 
 UTC = pytz.timezone("UTC")
@@ -35,28 +39,33 @@ class GamePipeline:
             dt = datetime.fromisoformat(item["startDate"][:-1])
             utc_dt = UTC.localize(dt)
             game, g_created = Game.objects.get_or_create(
-                description=self.normalize(item["description"]),
-                date=utc_dt,
                 external_uid=item["gameUID"],
-                league=self.normalize(item["league"]),
             )
+            if g_created:
+                game.description = self.normalize(item["description"])
+                game.date = utc_dt
+                game.league = self.normalize(item["league"])
+                game.save()
 
             outcome_dt = datetime.fromisoformat(item["startDate"][:-1])
             outcome, o_created = GameOutcome.objects.get_or_create(
                 external_uid=item["id"],
-                description=item["betName"],
-                bet_type=item["betType"],
-                bet_price=item["betPrice"],
-                update_dt=UTC.localize(outcome_dt),
             )
+            outcome.description = item["betName"]
+            outcome.bet_type = item["betType"]
+            outcome.bet_price = item["betPrice"]
+            outcome.update_dt = UTC.localize(outcome_dt)
+            outcome.save()
+
             game.outcomes.add(outcome)
-            self.gathered_outcomes[game].append(outcome)
+            self.gathered_outcomes[game].append(outcome.id)
         return item
 
     def close_spider(self, spider):
         for game in self.gathered_outcomes.keys():
             outcomes = self.gathered_outcomes[game]
-            game.outcomes.all().exclude(outcomes=outcomes).update(is_latest=False)
+            logging.debug(f"Closing out {game}, outcomes: {outcomes}")
+            logging.debug(game.outcomes.all().exclude(id__in=outcomes).update(is_latest=False))
 
 
 class ScorePipeline:
