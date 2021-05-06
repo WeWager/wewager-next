@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wewager', '0025_delete_avatar'),
+        ("wewager", "0025_delete_avatar"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='gameoutcome',
-            name='is_latest',
+            model_name="gameoutcome",
+            name="is_latest",
             field=models.BooleanField(default=True),
         ),
     ]
