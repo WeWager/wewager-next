@@ -21,13 +21,13 @@ class GamePipeline:
     def open_spider(self, spider):
         self.gathered_outcomes = defaultdict(list)
 
-    def shorten(self, name):
+    def normalize(self, name):
         aliases = {
             "England - Premier League": "EPL",
             "New Jersey Islanders": "New York Islanders",
         }
         if name in aliases:
-            return aliases[name]
+            return name.replace(aliases[name])
         return name
 
     def process_item(self, item, spider):
@@ -35,10 +35,10 @@ class GamePipeline:
             dt = datetime.fromisoformat(item["startDate"][:-1])
             utc_dt = UTC.localize(dt)
             game, g_created = Game.objects.get_or_create(
-                description=item["description"],
+                description=self.normalize(item["description"]),
                 date=utc_dt,
                 external_uid=item["gameUID"],
-                league=self.shorten(item["league"]),
+                league=self.normalize(item["league"]),
             )
 
             outcome_dt = datetime.fromisoformat(item["startDate"][:-1])
