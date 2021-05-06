@@ -53,7 +53,7 @@ class GamePipeline:
             self.gathered_outcomes[game].append(outcome)
         return item
 
-    def close_spider(self):
+    def close_spider(self, spider):
         for game in self.gathered_outcomes.keys():
             outcomes = self.gathered_outcomes[game]
             game.outcomes.all().exclude(outcomes=outcomes).update(is_latest=False)
