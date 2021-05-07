@@ -13,6 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "first_name", "last_name", "avatar_url")
 
     def get_avatar_url(self, user):
-        if hasattr(user, "avatar"):
-            return user.avatar.url
+        if hasattr(user, "avatar") and user.avatar.image:
+            return user.avatar.image.url
         return DEFAULT_AVATAR
