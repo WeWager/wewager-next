@@ -161,6 +161,9 @@ SWAGGER_SETTINGS = {
     }
 }
 
+# CORS Settings
+CORS_ALLOW_ALL_ORIGINS = True
+
 """
 LOGGING = {
     "version": 1,
