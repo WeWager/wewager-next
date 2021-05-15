@@ -4,7 +4,9 @@ from pathlib import Path
 
 env = environ.Env(DEBUG=(bool, True), ALLOWED_HOSTS=(list, []))
 
-if not os.environ.get("PRODUCTION", False):
+PRODUCTION = os.environ.get("PRODUCTION", False)
+
+if not PRODUCTION:
     environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

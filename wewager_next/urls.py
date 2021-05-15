@@ -20,12 +20,10 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from wewager_next.settings import PRODUCTION
 
-admin.site.site_header = "WeWager Admin"
-admin.site.site_title = "WeWager Admin Panel"
-admin.site.index_title = (
-    '"You miss 100% of the shots you don\'t take" -Wayne Gretzky -Michael Scott'
-)
+admin.site.site_header = "WeWager Admin - Production" if PRODUCTION else "WeWager Admin - DEVELOPMENT"
+admin.site.site_title = "WeWager Admin Panel" if PRODUCTION else "DEV WeWager Admin Panel"
 
 
 schema_view = get_schema_view(
