@@ -14,8 +14,7 @@ class WagerSerializer(serializers.ModelSerializer):
     game_desc = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     amount = MoneyField(max_digits=10, decimal_places=2)
-    recipient_amount = MoneyField(max_digits=10, decimal_places=2)
-    outcome = GameOutcomeSerializer()
+    recipient_amount = MoneyField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Wager
@@ -29,13 +28,15 @@ class WagerSerializer(serializers.ModelSerializer):
             "recipient_amount",
             "amount",
             "status",
+            "recipient"
         )
+        read_only_fields = ("game_desc", "is_sender", "status")
 
     def get_opponent(self, wager):
         opp = (
-            wager.sender
+            wager.recipient
             if wager.sender == self.context.get("user", None)
-            else wager.recipient
+            else wager.sender
         )
         return UserSerializer(opp).data
 
@@ -47,6 +48,31 @@ class WagerSerializer(serializers.ModelSerializer):
 
     def get_game_desc(self, wager):
         return wager.game.description
+
+    def validate(self, data):
+        print(data)
+        if self.context.get("user") == data["recipient"]:
+            raise serializers.ValidationError("You cannot send a wager to yourself.")
+
+        if self.context.get("user").wallet.balance < Money(data["amount"], "USD"):
+            raise serializers.ValidationError(
+                "You don't have enough money for this transaction."
+            )
+
+        if data["outcome"] not in data["game"].outcomes.all():
+            raise serializers.ValidationError(
+                "This outcome is not a part of this game."
+            )
+
+        return data
+
+    def create(self, data):
+        amount = Money(data.get("amount"), "USD")
+        if amount < Money(0, "USD"):
+            raise serializers.ValidationError("Amount must not be negative.")
+        data["sender"] = self.context.get("user")
+        data["amount"] = amount
+        return Wager.objects.create_wager(**data)
 
 
 class WagerCreateSerializer(serializers.ModelSerializer):

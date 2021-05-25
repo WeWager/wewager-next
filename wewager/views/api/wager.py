@@ -11,13 +11,12 @@ from common.mixins import ReadWriteSerializerMixin
 from common.viewsets import CreateListRetrieveViewSet
 
 
-class WagerViewSet(ReadWriteSerializerMixin, CreateListRetrieveViewSet):
+class WagerViewSet(CreateListRetrieveViewSet):
     """
     List, create, and retrieve your wagers
     """
 
-    read_serializer_class = WagerSerializer
-    write_serializer_class = WagerCreateSerializer
+    serializer_class = WagerSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = ("game", "recipient", "status", "amount")
