@@ -5,9 +5,9 @@ from social.serializers.user import UserSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
-    like_count = serializers.IntegerField(read_only=True)
-    reply_count = serializers.IntegerField(read_only=True)
-    liked = serializers.BooleanField(read_only=True)
+    like_count = serializers.IntegerField(read_only=True, default=0)
+    reply_count = serializers.IntegerField(read_only=True, default=0)
+    liked = serializers.BooleanField(read_only=True, default=False)
     user = UserSerializer(read_only=True)
 
     class Meta:
