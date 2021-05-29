@@ -27,6 +27,9 @@ class PostViewSet(ModelViewSet):
             .order_by("-date")
         )
 
+    def get_serializer_context(self):
+        return {"user": self.request.user}
+
     def action_response(self, post):
         serializer = self.serializer_class(post)
         return Response(serializer.data)
