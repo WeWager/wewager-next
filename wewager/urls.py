@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views as auth_views
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 import wewager.views
 
@@ -11,6 +12,7 @@ router.register(
     r"leaderboard", wewager.views.LeaderboardViewSet, basename="leaderboard"
 )
 router.register(r"wallet", wewager.views.WalletViewSet, basename="wallet")
+router.register(r'devices', FCMDeviceAuthorizedViewSet)
 
 v1_urlpatterns = [
     path("api-token-auth/", auth_views.obtain_auth_token),

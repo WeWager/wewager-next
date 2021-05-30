@@ -22,8 +22,12 @@ from drf_yasg import openapi
 
 from wewager_next.settings import PRODUCTION
 
-admin.site.site_header = "WeWager Admin - Production" if PRODUCTION else "WeWager Admin - DEVELOPMENT"
-admin.site.site_title = "WeWager Admin Panel" if PRODUCTION else "DEV WeWager Admin Panel"
+admin.site.site_header = (
+    "WeWager Admin - Production" if PRODUCTION else "WeWager Admin - DEVELOPMENT"
+)
+admin.site.site_title = (
+    "WeWager Admin Panel" if PRODUCTION else "DEV WeWager Admin Panel"
+)
 
 
 schema_view = get_schema_view(

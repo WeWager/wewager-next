@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django_apscheduler",
     "django_filters",
     "corsheaders",
+    "fcm_django",
 ]
 
 MIDDLEWARE = [
@@ -165,6 +166,12 @@ SWAGGER_SETTINGS = {
 
 # CORS Settings
 CORS_ALLOW_ALL_ORIGINS = True
+
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": env("FCM_SERVER_KEY"),
+    "ONE_DEVICE_PER_USER": True,
+    "DELETE_INACTIVE_DEVICES": True,
+}
 
 """
 LOGGING = {
