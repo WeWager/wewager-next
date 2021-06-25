@@ -23,10 +23,14 @@ class BetCloser:
             if re.match(resolver, outcome.bet_type):
                 handler = resolvers[resolver]
                 logger.debug(f"Resolver {resolver} matched.")
-                handler(outcome, game)
+                if game.data is not None:
+                    handler(outcome, game)
+                    logger.info(f"Game id {game.id} handled.")
+                else:
+                    logger.error(f"Game id {game.id} does not have data.")
                 outcome.save()
                 return
-        logger.error(f"ERROR: No resolver matched {outcome.bet_type}")
+        logger.error(f"ERROR: No resolver matched: {outcome.bet_type}")
 
     @staticmethod
     def resolve_game(game: Game):
