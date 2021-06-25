@@ -4,7 +4,6 @@ from django.db.models import Count, Q, OuterRef, Exists
 
 from social.models import Post
 from social.serializers import PostSerializer
-from common.permissions import IsOwnerOrReadOnly
 
 
 class FeedViewSet(viewsets.ReadOnlyModelViewSet):
