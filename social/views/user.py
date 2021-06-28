@@ -7,6 +7,7 @@ from rest_framework.permissions import BasePermission, AllowAny
 from rest_framework.response import Response
 
 from common.viewsets import CreateViewSet
+from common.mixins import SearchActionMixin
 from social.serializers import UserSerializer, UserCreateSerializer
 
 
@@ -17,7 +18,7 @@ class CurrentUserPermission(BasePermission):
         return True
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet, SearchActionMixin):
     """
     /user
     /user/:id
@@ -26,25 +27,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = get_user_model().objects.all().order_by("id")
     serializer_class = UserSerializer
-    permission_classes = [CurrentUserPermission]
+    permission_classes = (CurrentUserPermission,)
+    search_fields = ("username", "first_name", "last_name")
 
     @action(methods=["GET"], detail=False)
     def current_user(self, request: Request):
         serializer = UserSerializer(request.user)
-        return Response(serializer.data)
-
-    @action(methods=["GET"], detail=False)
-    def search(self, request: Request):
-        queryset = get_user_model().objects.annotate(
-            search=SearchVector("username", "first_name", "last_name")
-        ).filter(search=request.query_params.get("q", ""))
-        
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
 

@@ -3,6 +3,7 @@ import django_filters.rest_framework as filters
 
 from wewager.models import Game
 from wewager.serializers import GameSerializer
+from common.mixins import SearchActionMixin
 
 
 class GameFilter(filters.FilterSet):
@@ -21,7 +22,7 @@ class GameFilter(filters.FilterSet):
         fields = ("description", "date", "league", "ended", "since", "ordering")
 
 
-class GameViewSet(viewsets.ReadOnlyModelViewSet):
+class GameViewSet(viewsets.ReadOnlyModelViewSet, SearchActionMixin):
     """
     View current and past games
     """
@@ -30,3 +31,4 @@ class GameViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GameSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = GameFilter
+    search_fields = ("description", "date", "league", "outcomes__description")

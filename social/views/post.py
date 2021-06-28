@@ -6,13 +6,15 @@ from rest_framework.pagination import PageNumberPagination
 from django.db.models import Count, Q, OuterRef, Exists
 
 from social.models import Post
+from common.mixins import SearchActionMixin
 from social.serializers import PostSerializer, CommentSerializer
 from common.permissions import IsOwnerOrReadOnly, CanReactToPost
 
 
-class PostViewSet(ModelViewSet):
+class PostViewSet(ModelViewSet, SearchActionMixin):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, (IsOwnerOrReadOnly | CanReactToPost)]
+    search_fields = ["content"]
 
     def get_queryset(self):
         user = self.request.user
