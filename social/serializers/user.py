@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "avatar_url",
             "is_following",
-            "is_follower"
+            "is_follower",
         )
 
     def get_avatar_url(self, user):
