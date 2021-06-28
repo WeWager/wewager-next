@@ -47,7 +47,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet, SearchActionMixin):
                     Follow.objects.filter(
                         follower__id=OuterRef("id"), is_following=self.request.user
                     )
-                )
+                ),
             )
         )
 

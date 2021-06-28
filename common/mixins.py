@@ -32,9 +32,12 @@ class SearchActionMixin:
         query_str = request.query_params.get("q", "")
         vector = SearchVector(*fields)
         query = SearchQuery(query_str, search_type="phrase")
-        queryset = Model.objects.annotate(search=vector).filter(
-            search__icontains=query_str
-        ).annotate(rank=SearchRank(vector, query)).order_by("-rank")
+        queryset = (
+            Model.objects.annotate(search=vector)
+            .filter(search__icontains=query_str)
+            .annotate(rank=SearchRank(vector, query))
+            .order_by("-rank")
+        )
 
         page = self.paginate_queryset(queryset)
         if page is not None:
