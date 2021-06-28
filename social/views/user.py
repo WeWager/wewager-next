@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, AllowAny
 from rest_framework.response import Response
+from rest_framework.generics import CreateAPIView
 
-from social.serializers import UserSerializer
+from social.serializers import UserSerializer, UserCreateSerializer
 
 
 class CurrentUserPermission(BasePermission):
@@ -29,3 +30,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     def current_user(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+
+class UserRegistrationView(CreateAPIView):
+    """
+    Create-only class for user registration
+    """
+
+    serializer_class = UserCreateSerializer
+    permission_classes = [AllowAny]

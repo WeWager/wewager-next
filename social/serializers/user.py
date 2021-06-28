@@ -16,3 +16,17 @@ class UserSerializer(serializers.ModelSerializer):
         if hasattr(user, "avatar") and user.avatar.image:
             return user.avatar.image.url
         return DEFAULT_AVATAR
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ("id", "username", "password", "email", "first_name", "last_name")
+        read_only_fields = ["id"]
+        extra_kwargs = {
+            "password": {"write_only": True}
+        }
+
+    def create(self, data):
+        return get_user_model().objects.create_user(**data)
