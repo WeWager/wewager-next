@@ -12,7 +12,7 @@ router.register(
     r"leaderboard", wewager.views.LeaderboardViewSet, basename="leaderboard"
 )
 router.register(r"wallet", wewager.views.WalletViewSet, basename="wallet")
-router.register(r'devices', FCMDeviceAuthorizedViewSet)
+router.register(r"devices", FCMDeviceAuthorizedViewSet)
 
 v1_urlpatterns = [
     path("api-token-auth/", auth_views.obtain_auth_token),

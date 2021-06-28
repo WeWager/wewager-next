@@ -64,7 +64,7 @@ def run():
         id="resolve_all_games",
         max_instances=1,
         replace_existing=True,
-        next_run_time=datetime.now()
+        next_run_time=datetime.now(),
     )
 
     scheduler.add_job(

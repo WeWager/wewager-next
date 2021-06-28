@@ -38,8 +38,7 @@ class BetCloser:
             logger.debug(f"Resolving {outcome.description}...")
             if outcome.hit is None:
                 BetCloser.resolve_bet(outcome, game)
-            wagers = Wager.objects.filter(outcome=outcome,
-                                          status=WagerState.ACCEPTED)
+            wagers = Wager.objects.filter(outcome=outcome, status=WagerState.ACCEPTED)
             for wager in wagers:
                 wager.complete(outcome.hit)
                 wager.save()

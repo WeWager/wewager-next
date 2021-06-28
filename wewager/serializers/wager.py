@@ -37,7 +37,7 @@ class WagerSerializer(serializers.ModelSerializer):
             "recipient_amount",
             "amount",
             "status",
-            "recipient"
+            "recipient",
         )
         read_only_fields = ("game_desc", "is_sender", "status")
 

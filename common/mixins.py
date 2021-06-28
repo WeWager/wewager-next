@@ -41,9 +41,9 @@ class ReadWriteSerializerMixin(object):
 class SearchActionMixin:
     """
     Adds a /search?q=<query> action to a `ViewSet`.
-    
+
     This action assumes your ViewSet has a `queryset` and `serializer_class`.
-    
+
     Also requires you to set `search_fields`, a list containing model fields to
     search against.
     """
@@ -58,15 +58,15 @@ class SearchActionMixin:
             Model = self.get_queryset().model
 
         assert Model is not None, "SearchActionMixin requires a model"
-        
+
         fields = getattr(self, "search_fields")
         if fields == []:
             fields = Model._meta.fields
 
-        queryset = Model.objects.annotate(
-            search=SearchVector(*fields)
-        ).filter(search=request.query_params.get("q", ""))
-        
+        queryset = Model.objects.annotate(search=SearchVector(*fields)).filter(
+            search=request.query_params.get("q", "")
+        )
+
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

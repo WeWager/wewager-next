@@ -30,10 +30,7 @@ class CreateListRetrieveViewSet(
     pass
 
 
-class CreateViewSet(
-    mixins.CreateModelMixin,
-    viewsets.GenericViewSet
-):
+class CreateViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     A viewset that provides only the `create` action.
 
