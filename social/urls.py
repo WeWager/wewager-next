@@ -8,8 +8,8 @@ router.register(r"post", social.views.PostViewSet, basename="post")
 router.register(r"feed", social.views.FeedViewSet, basename="feed")
 router.register(r"user", social.views.UserViewSet, basename="user")
 router.register(r"follow", social.views.FollowViewSet, basename="follow")
+router.register(r"register", social.views.UserRegistrationViewSet, basename="register")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("register/", social.views.UserRegistrationView.as_view())
 ]
