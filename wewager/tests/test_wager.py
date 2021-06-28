@@ -24,9 +24,9 @@ class WagerTests(APITransactionTestCase):
 
     def build_payload(self, **kwargs):
         return {
-            "game": kwargs.get("game", self.game.id),
-            "outcome": kwargs.get("outcome", self.game.outcomes.first().id),
-            "recipient": kwargs.get("recipient", self.you.id),
+            "game_id": kwargs.get("game", self.game.id),
+            "outcome_id": kwargs.get("outcome", self.game.outcomes.first().id),
+            "recipient_id": kwargs.get("recipient", self.you.id),
             "amount": kwargs.get("amount", "10.00"),
         }
 
@@ -37,7 +37,8 @@ class WagerTests(APITransactionTestCase):
     @parameterized.expand([(x,) for x in range(4)])
     def test_create_wager(self, outcome_num):
         outcome_id = self.game.outcomes.all()[outcome_num].id
-        resp = self.client.post(WAGER_LIST, self.build_payload(outcome=outcome_id))
+        payload = self.build_payload(outcome=outcome_id)
+        resp = self.client.post(WAGER_LIST, data=payload)
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Wager.objects.all().count(), 1)
 
@@ -50,7 +51,7 @@ class WagerTests(APITransactionTestCase):
             ("recipient", -1),
             ("recipient", ""),
             ("amount", "-10"),
-            ("amount", "100"),
+            ("amount", "1000000"),
             ("amount", ""),
         ]
     )
@@ -59,7 +60,7 @@ class WagerTests(APITransactionTestCase):
         resp = self.client.post(WAGER_LIST, payload)
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @parameterized.expand(["game", "outcome", "recipient", "amount"])
+    @parameterized.expand(["game_id", "outcome_id", "recipient_id", "amount"])
     def test_create_wager_without_value(self, key):
         payload = self.build_payload()
         payload.pop(key)

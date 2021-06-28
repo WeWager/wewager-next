@@ -1,3 +1,4 @@
+from wewager.serializers.wager import WagerSerializer
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth.models import User
@@ -27,5 +28,5 @@ class UserTestCase(APITestCase):
     def test_get_user_wallet(self):
         response = self.client.get(f"/api/v1/wallet/{self.user.id}/", format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        balance = str(self.user.wallet.balance).lstrip("$")
-        self.assertEqual(response.data, {"user": self.user.id, "balance": balance})
+        balance = str(self.user.wallet.balance).lstrip("$").replace(",", "")
+        self.assertEqual(response.data["balance"], balance)

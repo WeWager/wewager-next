@@ -2,12 +2,11 @@ from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema, no_body
+from drf_yasg.utils import swagger_auto_schema
 import django_filters.rest_framework as filters
 
 from wewager.models import Wager
-from wewager.serializers import WagerSerializer, WagerCreateSerializer, EmptySerializer
-from common.mixins import ReadWriteSerializerMixin
+from wewager.serializers import WagerSerializer, EmptySerializer
 from common.viewsets import CreateListRetrieveViewSet
 
 
