@@ -60,4 +60,4 @@ class Wallet(models.Model):
 def create_new_wallet(sender, **kwargs):
     if kwargs.get("created", False):
         user = kwargs.get("instance")
-        Wallet.objects.create(user=user, balance=0)
+        Wallet.objects.create(user=user, balance=1000)
