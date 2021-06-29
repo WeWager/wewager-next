@@ -8,7 +8,7 @@ class SearchActionMixin:
     """
     Adds a /search?q=<query> action to a `ViewSet`.
 
-    This action assumes your ViewSet has a `queryset` and `serializer_class`.
+    This action assumes your ViewSet has a `queryset` and `serializer_class` (or their associated methods).
 
     Also requires you to set `search_fields`, a list containing model fields to
     search against.

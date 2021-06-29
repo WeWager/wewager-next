@@ -1,15 +1,15 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.dispatch import receiver
 from django_fsm import FSMField, transition
 from djmoney.models.fields import MoneyField
 from djmoney.models.validators import MinMoneyValidator
-from rest_framework.exceptions import ParseError
 
 from wewager.exceptions import BalanceTooLow
-from wewager.models.game import Game
 from wewager.models.transaction import TransactionType
 from wewager.models.wallet import Wallet
+from common.notification_service import send_message_to_user
 
 
 class WagerManager(models.Manager):
@@ -78,6 +78,7 @@ class Wager(models.Model):
         Wallet.deduct_balance(
             self.recipient, self.recipient_amount, TransactionType.WAGER
         )
+        send_message_to_user(self.recipient, "Wager Accepted", f"{self.recipient.first_name} accepted your wager!")
 
     @transition(field=status, source=WagerState.PENDING, target=WagerState.DECLINED)
     def decline(self):
@@ -92,3 +93,14 @@ class Wager(models.Model):
         winnings = self.amount + self.recipient_amount
         winner = self.sender if outcome_hit else self.recipient
         Wallet.add_balance(winner, winnings, TransactionType.WIN)
+
+
+@receiver(models.signals.post_save, sender=Wager)
+def send_wager_notification(sender, **kwargs):
+    if kwargs.get("created", False):
+        wager: Wager = kwargs.get("instance")
+        send_message_to_user(
+            wager.recipient,
+            f"{wager.sender.first_name} sent you a wager",
+            f"{wager.amount} on {wager.game.description}",
+        )
